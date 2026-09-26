@@ -424,8 +424,14 @@ tbody th {
   margin: 32px 0 0;
 }
 .map-caption {
-  min-height: 3.4em;
+  display: grid;
   margin-bottom: 12px;
+}
+.map-caption > * {
+  grid-area: 1 / 1;
+}
+.map-caption-sizer {
+  visibility: hidden;
 }
 .map-date {
   font-size: 22px;

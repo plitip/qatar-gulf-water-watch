@@ -56,6 +56,10 @@ function describeFrame(frame) {
   );
 }
 
+function captionFor(frame, data) {
+  return `${relativeToSighting(frame.date, data.documented_first_sighting)}. ${describeFrame(frame)}`;
+}
+
 // Grid values are pixel centres; the image spans half a pixel beyond them on every side.
 function placeOnMap(point, grid) {
   const latStep = (grid.north - grid.south) / (grid.rows - 1);
@@ -201,6 +205,9 @@ export default function RedTideMap({ theme }) {
   const midLat = grid ? (grid.north + grid.south) / 2 : 25.7;
   const aspect = grid ? (grid.cols * Math.cos((midLat * Math.PI) / 180)) / grid.rows : 2.07;
   const current = shown !== null ? data.frames[shown] : null;
+  const longestNote = data
+    ? data.frames.map((f) => captionFor(f, data)).reduce((a, b) => (b.length > a.length ? b : a), "")
+    : " ";
 
   // Timeline: flagged area on each check. Linear scale; any non-zero day gets at least 2 px
   // so a small patch is still visible (the exact figure is in the caption above the map).
@@ -237,10 +244,16 @@ export default function RedTideMap({ theme }) {
 
   return (
     <figure className="redtide-map" ref={rootRef}>
-      <div className="map-caption" aria-live={playing ? "off" : "polite"}>
-        <div className="map-date">{current ? formatDay(current.date) : " "}</div>
-        <div className="map-note">
-          {current ? `${relativeToSighting(current.date, data.documented_first_sighting)}. ${describeFrame(current)}` : " "}
+      {/* The hidden copy of the longest caption sits in the same grid cell as the real one, so the
+          caption always takes the same height and the map doesn't jump as the text changes. */}
+      <div className="map-caption">
+        <div className="map-caption-sizer" aria-hidden="true">
+          <div className="map-date">30 September 2008</div>
+          <div className="map-note">{longestNote}</div>
+        </div>
+        <div aria-live={playing ? "off" : "polite"}>
+          <div className="map-date">{current ? formatDay(current.date) : " "}</div>
+          <div className="map-note">{current ? captionFor(current, data) : " "}</div>
         </div>
       </div>
 
