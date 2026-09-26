@@ -25,12 +25,22 @@ Qatar-only spike (local cause) from a Gulf-wide one (regional bloom). Offered, n
 **Watch the wider Gulf, not just the intakes.**
 Satellite data lags by a day or more, so looking only at the intakes is close to same-day
 detection. Real lead time comes from seeing a patch in the wider Gulf days before it
-drifts to Qatar. Hence `scan_gulf_for_approaching_blooms.py` and then the multi-day
-`scan_gulf_trajectory.py`: a single snapshot shows a hotspot exists, not that it's coming.
+drifts to Qatar. Hence `gulf.scan_today()` and then the multi-day
+`gulf.track_trajectory()`: a single snapshot shows a hotspot exists, not that it's coming.
 
 **Hotspot = above the 95th percentile AND above 3.0 mg/m³.**
 A percentile alone flags junk on a uniformly murky day. A fixed floor alone ignores the
 day's conditions. Both together means locally unusual and high in absolute terms.
+
+**Known problem, found on real data (September 2026): the hotspot rule doesn't work as
+intended yet.** From 10 to 24 September the scan found exactly 462 hotspots every day, and
+the nearest one was about 6 km from Qatar, on Doha's own coast, on every day but one. Two
+reasons. A 95th-percentile cutoff flags about 5% of the valid pixels by definition, so the
+count barely moves unless the 3.0 mg/m³ floor kicks in. And shallow, murky coastal water
+near Doha is always in that top 5%, so "nearest hotspot" is stuck on the coast and the
+trajectory stays flat whatever happens offshore. Likely fixes: leave out a coastal band,
+or compare each pixel with its own seasonal history (the same idea the intake check and
+the dashboard already use) instead of with the rest of that day's scene.
 
 **Trajectory tracks nearest-hotspot distance, not a tagged water patch.**
 It's simpler, but if one patch fades near Qatar and an unrelated one appears farther out,
@@ -47,9 +57,9 @@ more rigorous than it is. For a university pitch, that's a liability. Reviewers 
 the field will ask what the model learned.
 
 **Instead: physics-based advection plus a historical backtest.**
-- `predict_gulf_bloom_trajectory.py` moves each hotspot along the sampled ocean current,
+- `projection.py` moves each hotspot along the sampled ocean current,
   held constant. It's labelled as a projection, not a forecast.
-- `backtest_2008_red_tide.py` runs the real detector on real 2008 imagery and measures lead
+- `backtest.py` runs the real detector on real 2008 imagery and measures lead
   time against the documented first sighting. This is the project's strongest evidence,
   because it's checked against something that really happened.
 
@@ -79,7 +89,7 @@ Options, all still open:
 1. **GitHub Actions** on a cron schedule. Free. Runners have normal outbound internet, so
    Copernicus should be reachable (untested). Credentials go in GitHub Secrets as
    `COPERNICUSMARINE_SERVICE_USERNAME` / `COPERNICUSMARINE_SERVICE_PASSWORD`.
-2. Laptop + Windows Task Scheduler running `run_daily_watch.py`, then `git push`. Only
+2. Laptop + Windows Task Scheduler running `python -m bloomwatch daily`, then `git push`. Only
    runs when the laptop is on.
 3. Raspberry Pi or a VPS (Oracle Cloud Always Free is the free-forever option) with cron,
    then `git push`. Don't expose a home Pi directly to the internet; push and let Vercel
@@ -90,7 +100,7 @@ fails under `file://`. On a real web host, fetching JSON would work, and it's a 
 refactor once hosting is decided.
 
 **Email alerts were recommended early as the most useful next step** (the dashboard is for
-looking; the alert is what makes it a tool). The `TODO` in `qatar_bloom_watch.py` is still
+looking; the alert is what makes it a tool). The `TODO` in `intake.py` is still
 there. Not built.
 
 ## Style

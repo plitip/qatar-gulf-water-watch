@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bloomwatch"
+version = "0.1.0"
+description = "Satellite early warning for harmful algal blooms near Qatar's desalination intakes"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = [
+    "copernicusmarine>=1.3.0",
+    "numpy",
+    "xarray",
+    "netCDF4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+bloomwatch = "bloomwatch.__main__:main"
+
+[tool.setuptools]
+packages = ["bloomwatch"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

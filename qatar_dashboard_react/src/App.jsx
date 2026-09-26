@@ -89,7 +89,7 @@ export default function App() {
           Gulf-wide trajectory: same-day statistical outliers (top 5% chlorophyll, above a 3.0 mg/m³ floor) scanned
           across the wider Strait of Hormuz–to–Qatar corridor, tracking the nearest one's distance to Qatar's coast
           day over day. A prototype signal, not a tracked/tagged patch of water — see{" "}
-          <span className="mono">scan_gulf_trajectory.py</span> for caveats.
+          <span className="mono">bloomwatch/gulf.py</span> for caveats.
         </div>
         <div>
           <strong>Prototype, not an operational warning system.</strong> Intake coordinates are approximate and

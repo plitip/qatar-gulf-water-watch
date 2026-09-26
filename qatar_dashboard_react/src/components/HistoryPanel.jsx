@@ -1,6 +1,6 @@
 // "Has this happened before?" panel, ported from the static dashboard
 // (qatar_dashboard/index.html, #historyPanel) with the same wording and source.
-// The backtest result is deliberately NOT shown here yet: backtest_2008_red_tide.py
+// The backtest result is deliberately NOT shown here yet: bloomwatch/backtest.py
 // hasn't been run against real data, and nothing gets displayed until it has.
 export default function HistoryPanel() {
   return (
@@ -34,7 +34,7 @@ export default function HistoryPanel() {
           </a>
           , Harmful Algae (2010). A backtest of this dashboard's own detection method against archived 2008–2009
           satellite imagery, checking how much lead time it would actually have given, is in{" "}
-          <span className="mono">backtest_2008_red_tide.py</span>; results get added here once that's been run against
+          <span className="mono">bloomwatch/backtest.py</span>; results get added here once that's been run against
           the real historical data.
         </p>
       </div>

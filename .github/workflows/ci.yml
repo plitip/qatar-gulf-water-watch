@@ -12,9 +12,6 @@ jobs:
   pipeline-tests:
     name: Python pipeline (offline tests)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: qatar_bloom_watch
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -22,8 +19,8 @@ jobs:
           python-version: "3.12"
       # Only numpy is needed offline: copernicusmarine/xarray are imported inside
       # the download functions, which these tests never call.
-      - run: pip install numpy
-      - run: python test_offline_logic.py
+      - run: pip install numpy pytest
+      - run: python -m pytest
 
   dashboard:
     name: React dashboard (lint + build)

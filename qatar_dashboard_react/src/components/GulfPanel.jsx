@@ -27,9 +27,9 @@ export default function GulfPanel({ trajectory }) {
           </div>
         </div>
         <p className="stat-note" style={{ padding: "8px 4px 14px", fontSize: 12.5, lineHeight: 1.6 }}>
-          No trajectory data published yet. The wider-Gulf scan (
-          <span className="mono">scan_gulf_trajectory.py</span>) is written and tested on synthetic data, but hasn't
-          been run against live satellite data, so this panel stays empty rather than showing placeholder numbers.
+          No trajectory data published yet. The wider-Gulf scan (<span className="mono">bloomwatch/gulf.py</span>)
+          runs on live satellite data, but its hotspot rule keeps flagging the permanently murky water off Doha, so
+          the trend it produces doesn't mean much yet. This panel stays empty until that's fixed.
         </p>
       </section>
     );

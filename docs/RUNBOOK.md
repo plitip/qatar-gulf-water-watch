@@ -2,9 +2,10 @@
 
 ## One-time setup (Windows)
 
+From the repo root:
+
 ```powershell
-cd qatar_bloom_watch
-python -m pip install -r requirements.txt
+python -m pip install -e ".[dev]"
 ```
 
 If the `copernicusmarine` CLI isn't on PATH (common with the python.org Windows installer),
@@ -34,16 +35,15 @@ Known setup errors:
 ## Daily run
 
 ```powershell
-cd qatar_bloom_watch
-python run_daily_watch.py
+python -m bloomwatch daily
 ```
 
-This runs `qatar_bloom_watch.py` → `scan_gulf_for_approaching_blooms.py` →
-`scan_gulf_trajectory.py` → `update_dashboard_gulf_panel.py`. Afterwards, open
+This runs `check` → `scan` → `trajectory` → `dashboard` (each one also works on its own,
+e.g. `python -m bloomwatch scan`; `python -m bloomwatch --help` lists them). Afterwards, open
 `qatar_dashboard\index.html` by double-clicking it. There's no server and no localhost;
 it's a plain file.
 
-Offline tests (no login needed): `python test_offline_logic.py`
+Offline tests (no login needed): `python -m pytest`
 
 ## Scheduling on the laptop (Windows Task Scheduler)
 
@@ -54,8 +54,8 @@ repo creates the task; it has to be set up by hand.
 2. Name it (e.g. "Gulf Water Watch"). Trigger: **Daily**, mid-morning (data lags a day).
 3. Action: **Start a program**.
    - Program/script: `python` (or the full path to `python.exe`)
-   - Add arguments: `run_daily_watch.py`
-   - Start in: the full path of this repo's `qatar_bloom_watch` folder
+   - Add arguments: `-m bloomwatch daily`
+   - Start in: the full path of this repo
 4. Finish. Optionally, under the task's Settings, enable "Run task as soon as possible
    after a scheduled start is missed" (runs are skipped while the laptop is off or
    asleep).
@@ -71,7 +71,7 @@ npm run build     # static site in dist/
 npm run preview   # serve dist/ with the production security headers
 ```
 
-To show real trajectory data, copy `qatar_bloom_watch\gulf_bloom_trajectory.json` over
+To show real trajectory data, copy `data\gulf_bloom_trajectory.json` over
 `qatar_dashboard_react\src\data\gulfTrajectory.json`.
 
 ## Hosting (Vercel)
