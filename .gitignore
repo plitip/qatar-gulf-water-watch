@@ -1,0 +1,45 @@
+# Credentials: never commit
+.copernicusmarine/
+.copernicusmarine-credentials
+.env
+*.env
+.netrc
+
+# Downloaded satellite scenes (large, re-downloadable)
+*.nc
+qatar_bloom_watch/chl_data/
+qatar_bloom_watch/gulf_scan_data/
+qatar_bloom_watch/gulf_current_data/
+qatar_bloom_watch/backtest_2008_data/
+qatar_bloom_watch/chl_historical_data/
+
+# Local run state / daily-regenerated outputs
+qatar_bloom_watch/chl_history.json
+qatar_bloom_watch/chl_dataset_ids.txt
+qatar_bloom_watch/gulf_bloom_watch.json
+qatar_bloom_watch/gulf_bloom_trajectory.json
+qatar_bloom_watch/gulf_bloom_prediction.json
+# backtest_2008_red_tide.json is intentionally NOT ignored: it's a result worth keeping.
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Node / Vite
+node_modules/
+dist/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Private working notes (kept locally, not published)
+CLAUDE.md
+docs/PROJECT_CONTEXT.md
+docs/NEXT_STEPS.md
+.claude/
