@@ -1,51 +1,56 @@
 # Gulf Water Watch
 
-Satellite monitoring of chlorophyll-a near Qatar's three largest desalination intakes
-(Ras Laffan, Ras Abu Fontas, Umm Al Houl), as an early-warning prototype for harmful
-algal blooms ("red tide").
+Qatar gets almost all of its drinking water from desalination plants. If a harmful algal
+bloom (red tide) reaches one of their intakes, it can clog the filters and shut the plant
+down. This already happened in the region. In 2008 a bloom of *Cochlodinium polykrikoides*
+started in the Gulf of Oman, spread into the Arabian Gulf and reached Qatari waters.
+Desalination plants in the UAE and Oman had to go offline for weeks.
 
-Qatar gets almost all of its drinking water from desalination. In 2008–09 a bloom of
-*Cochlodinium polykrikoides* spread from the Gulf of Oman into the Arabian Gulf, reached
-Qatari waters, and forced desalination plants in the UAE and Oman offline for weeks. A
-bloom that clogs intake filters is a water-supply problem, and satellites can see
-chlorophyll build up days before it reaches the coast.
+Satellites can see chlorophyll building up in the water days before a bloom hits the
+coast. So I built this to watch Qatar's three largest intakes (Ras Laffan, Ras Abu Fontas
+and Umm Al Houl) using free satellite data, and flag anything unusual.
 
 ![React dashboard, dark mode](docs/screenshots/react_dashboard_dark.png)
 
 ## What it does
 
-- **Intake check (daily).** Downloads the latest Copernicus Marine chlorophyll scene,
-  averages a ~5 km box at each intake, and flags a reading more than 2 standard
-  deviations above that intake's own history.
-- **Seasonal baseline.** Chlorophyll here peaks every warm season, so the dashboard
-  compares each month against the *same calendar month* in previous years, not against
-  a year-round average that would flag every normal summer.
-- **Wider-Gulf scan.** Looks for chlorophyll hotspots between the Strait of Hormuz and
-  Qatar and tracks whether the nearest one is closing in over ten days.
-- **2008 backtest.** Runs the same detector over the real 2008–09 bloom to measure how
-  much warning it would actually have given.
+Every day it downloads the newest chlorophyll-a scene from Copernicus Marine and averages
+a small box, about 5 km wide, around each intake. If a reading is more than 2 standard
+deviations above that intake's own history, it gets flagged.
 
-There's deliberately no trained ML model: with one or two documented regional bloom
-events there's nothing to learn from that wouldn't be memorised noise.
-[DECISIONS.md](docs/DECISIONS.md) explains this and the other design choices.
+Chlorophyll here goes up every summer, so a spike in August doesn't mean much by itself.
+That's why the dashboard compares each month with the same month in past years instead of
+a year-round average. Otherwise every normal summer would show up as a warning.
+
+It also scans the wider Gulf, from the Strait of Hormuz to Qatar, for hotspots and checks
+whether the nearest one is getting closer over ten days. There's also a backtest that runs
+the same detector on the real 2008 bloom, to see how much warning it would have actually
+given.
+
+There's no trained ML model, and that's on purpose. The region only has one or two
+documented bloom events, which isn't enough to learn anything real from. A model trained
+on that would just memorise noise. The reasoning behind this and my other choices is in
+[DECISIONS.md](docs/DECISIONS.md).
 
 ## Status
 
-A working prototype, not an operational warning system.
+This is a prototype. It isn't an operational warning system yet.
 
 | Part | State |
 |---|---|
-| Daily intake check, 2018–2026 monthly history | Run against real Copernicus data |
-| Trajectory, current projection, backtest logic | Tested on synthetic data only |
-| Two dataset IDs (currents, daily 2008 archive) | Not yet confirmed |
-| Intake coordinates, alert thresholds | Approximate / untuned |
+| Daily intake check, 2018–2026 monthly history | Run on real Copernicus data |
+| Wider-Gulf scan, 10-day trajectory | Run on real data, but the hotspot rule needs fixing |
+| Current projection, 2008 backtest | Only tested on made-up data so far |
+| Two dataset IDs (currents, daily 2008 archive) | Not confirmed yet |
+| Intake coordinates, alert thresholds | Approximate, not tuned |
 
-The full list, and what's next, is in [ROADMAP.md](docs/ROADMAP.md).
+What's left to do is in [ROADMAP.md](docs/ROADMAP.md).
 
 ## Repository
 
 ```
-qatar_bloom_watch/        Python pipeline: fetch, detect, trajectory, projection, backtest
+bloomwatch/               Python pipeline: fetch, detect, trajectory, projection, backtest
+tests/                    Offline tests for the pipeline's logic
 qatar_dashboard/          Static dashboard: one self-contained index.html, no server needed
 qatar_dashboard_react/    The same dashboard in React + Vite (the deployed version)
 docs/                     Architecture, design decisions, runbook, roadmap
@@ -53,17 +58,17 @@ docs/                     Architecture, design decisions, runbook, roadmap
 
 ## Running it
 
-Python pipeline (needs a free [Copernicus Marine](https://marine.copernicus.eu) account):
+The Python pipeline needs a free [Copernicus Marine](https://marine.copernicus.eu) account:
 
 ```bash
-cd qatar_bloom_watch
-pip install -r requirements.txt
+pip install -e ".[dev]"
 copernicusmarine login
-python test_offline_logic.py   # offline tests, no login needed
-python run_daily_watch.py      # the daily steps, in order
+python -m pytest               # offline tests, no login needed
+python -m bloomwatch daily     # the daily steps, in order
+python -m bloomwatch --help    # every command
 ```
 
-React dashboard:
+The React dashboard:
 
 ```bash
 cd qatar_dashboard_react
@@ -72,22 +77,21 @@ npm run dev      # http://localhost:5173
 npm run build    # static site in dist/
 ```
 
-More detail, including scheduling and Vercel deployment, is in the
-[runbook](docs/RUNBOOK.md).
+The [runbook](docs/RUNBOOK.md) has more detail, like scheduling and deploying to Vercel.
 
 ## Data
 
-Chlorophyll-a from the [Copernicus Marine Service](https://marine.copernicus.eu)
-ocean-colour products (multi-sensor, 4 km). Historical context for the 2008–09 event is
-from Richlen et al., "The catastrophic 2008–2009 red tide in the Arabian gulf region",
+The chlorophyll-a data comes from the [Copernicus Marine Service](https://marine.copernicus.eu)
+ocean-colour products (multi-sensor, 4 km). The background on the 2008 bloom is from
+Richlen et al., "The catastrophic 2008–2009 red tide in the Arabian gulf region",
 *Harmful Algae* (2010).
 
 ## How this was built
 
-I built this with help from an AI coding assistant (Claude). I directed the project,
-made the design calls in [DECISIONS.md](docs/DECISIONS.md), and I run, test, and review
-every part before it goes in. Where something is only tested on synthetic data or still
-unverified, the code and docs say so.
+I used an AI coding assistant (Claude) to help build this. I decided what the project
+does and made the design calls in [DECISIONS.md](docs/DECISIONS.md), and I run, test and
+review everything before it goes in. If something has only been tested on made-up data or
+isn't verified yet, the code and docs say so.
 
 ## License
 
