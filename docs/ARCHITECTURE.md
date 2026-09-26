@@ -17,15 +17,17 @@ Copernicus Marine (free account)
    │                                              │         └─► gulf.publish_trajectory_to_dashboard ──► qatar_dashboard/index.html
    │                                              │
    │                                              └─► projection.project_hotspots ──► gulf_bloom_prediction.json
-   │                                                   (+ currents dataset, UNVERIFIED ID)
+   │                                                   (+ currents dataset)
    │
    ├─ Monthly reprocessed chlorophyll (confirmed) ──► intake.export_monthly_history ──► historical_chl_trends.csv
    │                                                    (2018 → present, per intake; feeds the dashboard chart)
    │
-   └─ Daily reprocessed chlorophyll (UNVERIFIED ID) ──► backtest.run_backtest ──► backtest_2008_red_tide.json
-                                                        (Aug 2008 – May 2009, real historical event)
+   └─ Daily reprocessed chlorophyll ──► gulf.load_monthly_normal (each pixel's normal, 2018–2025)
+                                    └─► backtest.run_backtest ──► backtest_2008_red_tide.json
+                                         (Aug 2008 – May 2009, real historical event)
 
-python -m bloomwatch daily = check → scan → trajectory → dashboard. Output files go in data/.
+python -m bloomwatch daily = check → scan → trajectory → dashboard, then publish.py records
+flags and writes status.json for the site. Output files go in data/.
 ```
 
 ## Python package: `bloomwatch/`
@@ -38,13 +40,15 @@ Everything runs as `python -m bloomwatch <command>` from the repo root, or as
 | `config.py` | Intake coordinates, bounding boxes, dataset IDs, file paths. | | Coordinates approximate |
 | `satellite.py` | The one Copernicus download function: caching, "not published yet" handling, stepping back to the newest published day, error explanations, catalogue lookup. | `datasets` | Run against real data |
 | `intake.py` | Averages a ~5 km box at each intake and compares it with that intake's own history (flag if > mean + 2 SD, after 14 days); a date that's already recorded isn't counted twice. Also the 14-day backfill and the monthly 2018 → present history. | `check`, `backfill`, `history` | Run against real data |
-| `gulf.py` | Hotspot scan of the wider Gulf (> 95th percentile AND > 3.0 mg/m³), the 10-day nearest-hotspot trend (≤ −5 km/day approaching, ≥ +5 receding, needs ≥ 4 usable days), and writing the trajectory into the static dashboard. | `scan`, `trajectory`, `dashboard` | Run against real data; the hotspot rule has a known problem (DECISIONS.md) |
-| `projection.py` | Moves the 5 nearest hotspots along the sampled ocean current, held constant for 10 days, and flags any that come within 20 km of the coast. Physics, not a trained model. | `project` | Math tested offline; currents dataset ID unverified |
-| `backtest.py` | Runs the same detector over Aug 2008 – May 2009 (every 3 days) and compares its first flag with the documented first sighting (~25 Aug 2008). | `backtest` | Logic tested offline; dataset ID unverified; ~100 downloads |
-| `__main__.py` | The command line. `daily` runs check → scan → trajectory → dashboard; one failing step doesn't stop the rest, and it exits non-zero only if every step failed. | `daily` | Run against real data |
+| `gulf.py` | Hotspot scan of the wider Gulf (each pixel > 3 SD above its own normal for the month, > 3.0 mg/m³, in a patch of ≥ 4 pixels), each month's per-pixel normal, the 10-day nearest-hotspot trend (≤ −5 km/day approaching, ≥ +5 receding, needs ≥ 4 usable days), and where unusual water kept recurring in that window (`recurring_area`: distance and direction from Doha, distance from shore). | `scan`, `trajectory` | Run against real data; the rule was redesigned after the first real runs (DECISIONS.md) |
+| `publish.py` | Everything the dashboards show: the trajectory (both dashboards), the flag log (`data/alert_log.json`), `status.json` for the "Latest satellite check" section, and the backtest summary. | `dashboard` | Run against real data |
+| `projection.py` | Moves the 5 nearest hotspots along the sampled ocean current, held constant for 10 days, and flags any that come within 20 km of the coast. Physics, not a trained model. | `project` | Math tested offline; not yet run on real currents |
+| `backtest.py` | Runs the same detector over Aug 2008 – May 2009 (every 3 days) and compares its first flag with the documented first sighting (~25 Aug 2008); runs the same early-August checks for 14 comparison years; and exports every checked day as a small map for the site. | `backtest` | Run on real data, with the comparison years |
+| `__main__.py` | The command line. `daily` runs check → scan → trajectory → dashboard, then records flags and writes the status; one failing step doesn't stop the rest, and it exits non-zero only if every step failed. | `daily` | Run against real data |
 
-`tests/test_logic.py` has 10 offline tests: trend verdicts, advection arrival, backtest
-stepping and lead time, the intake anomaly check, and the dashboard update. Run them with
+`tests/test_logic.py` has 22 offline tests: the hotspot rule, trend verdicts, where unusual
+water recurs, advection arrival, backtest stepping and summary, the comparison count, the
+map encoding, the intake anomaly check, the dashboard update and the flag log. Run them with
 `python -m pytest`. Downloaded scenes are cached in `data/cache/<kind>/`, one file per day.
 
 ## Copernicus datasets
@@ -53,8 +57,8 @@ stepping and lead time, the intake anomaly check, and the dashboard update. Run 
 |---|---|---|---|
 | Daily near-real-time chlorophyll | `cmems_obs-oc_glo_bgc-plankton_nrt_l4-gapfree-multi-4km_P1D` | `CHL` | **Yes**: ran on the laptop (dataset version 202311) |
 | Monthly reprocessed chlorophyll | `cmems_obs-oc_glo_bgc-plankton_my_l4-multi-4km_P1M` | `CHL` | **Yes**: downloaded 2018 → present (version 202603) |
-| Ocean currents | `cmems_mod_glo_phy-cur_anfc_0.083deg_P1D-m` | `uo`, `vo` | **No**: best-known match. Check with `describe --contains uo` |
-| Daily reprocessed chlorophyll (for 2008) | `cmems_obs-oc_glo_bgc-plankton_my_l4-multi-4km_P1D` | `CHL` | **No**: assumed daily sibling of the monthly one. Check with `describe --contains CHL` |
+| Ocean currents | `cmems_mod_glo_phy-cur_anfc_0.083deg_P1D-m` | `uo`, `vo` | **Yes**: in the live catalogue, June 2022 onward (checked 2026-09-26) |
+| Daily reprocessed chlorophyll (normals, 2008 backtest) | `cmems_obs-oc_glo_bgc-plankton_my_l4-gapfree-multi-4km_P1D` | `CHL` | **Yes**: September 1997 onward (checked 2026-09-26). The ID first assumed, without `gapfree`, doesn't exist |
 
 The NRT product only keeps a rolling recent window (about two weeks), and
 publication lags the calendar by a day or more. That's why the code walks back from today.
@@ -72,7 +76,8 @@ For anything historical, use the reprocessed ("_my_") products.
 | Anomaly threshold | mean + 2 SD, after 14 days | `BLOOM_ANOMALY_STD_THRESHOLD`, `MIN_BASELINE_DAYS` |
 | Wider Gulf box | lon 49–57, lat 24–27.5 | `GULF_WATCH_BBOX` |
 | Qatar reference point | 25.3 N, 51.5 E | `QATAR_REFERENCE_POINT` |
-| Hotspot rule | > 95th percentile AND > 3.0 mg/m³ | `ELEVATED_PERCENTILE`, `ELEVATED_MIN_VALUE` |
+| Hotspot rule | > 3 SD above the pixel's own normal, > 3.0 mg/m³, patch ≥ 4 pixels | `ANOMALY_Z_THRESHOLD`, `ELEVATED_MIN_VALUE`, `MIN_PATCH_PIXELS` |
+| Normal years | 2018–2025 | `NORMAL_YEARS` |
 | Trajectory | 10-day window, ≥ 4 points, ±5 km/day | `gulf.py` |
 | Projection | 10 days ahead, 20 km arrival, top 5 hotspots | `projection.py` |
 | 2008 bloom origin | Dibba Al-Hassan, 25.59 N, 56.27 E | `backtest.py` |
@@ -88,16 +93,28 @@ happened before?" panel on the 2008–09 event. Data is embedded as JS literals 
 `chl_data.json` and `historical_chl_trends.csv` next to it are the source data. There
 is no script that regenerates the embedded `DATA` block yet (see [ROADMAP.md](ROADMAP.md)).
 
-**`qatar_dashboard_react/`** is the same design as Vite + React 18, and it's the version
-deployed to Vercel. Components: `StatCards`, `ChlorophyllChart` (hover tooltip, clickable
-legend to dim series, table toggle), `GulfPanel`, `HistoryPanel` (the 2008–09 event),
-`ThemeToggle` (auto → forced light/dark, saved in localStorage). Data:
-`src/data/chlHistory.js` (generated from the CSV) and `src/data/gulfTrajectory.json`
-(`null` until a real scan is copied in).
+**`qatar_dashboard_react/`** is the version deployed to Vercel. From top to bottom: a
+headline built from the data (at the moment, that August 2026 was higher than any August
+since 2018 at all three intakes), the three intakes with one small chart each (2026 as a
+line over the usual 2018–2025 range as a shaded band, hover and keyboard readable), the
+monthly numbers as a table, the latest satellite check with the flag log, the 2008 red
+tide with the backtest result, and a short "About the data". Components:
+`StatusLine`, `IntakeOverview`, `SeasonalChart`, `MonthlyTable`, `LatestCheck`, `RedTide2008`, `RedTideMap`,
+`ThemeToggle`. Data in `src/data/`: `chlHistory.js` (monthly history), and
+`status.json`, `gulfTrajectory.json`, `backtest2008.json`, all written by `publish.py`. The
+2008 map frames (~540 KB, ~60 KB gzipped) are `public/data/redtide2008.json`, fetched only
+when that section comes near the screen: one character per three satellite squares, each
+square one of land / normal / well above normal / flagged.
+A section with no data doesn't render at all.
 
-Animations use GSAP in `src/animations/`: the headline, card count-ups, chart lines
-drawing in, and panels revealing on scroll. Two rules they all follow: the real value is
-in the HTML before any animation runs, and `prefers-reduced-motion` turns them off.
+Design rules it follows: one typeface (Public Sans), no boxes around sections, one
+decimal place, dates written out ("August 2026"), and colour with three jobs only: ink
+for text, grey for the usual range, blue for this year. The page describes findings, not
+the code; file names and implementation notes stay in these docs.
+
+Animations use GSAP in `src/animations/`: numbers counting up, chart lines drawing in, and
+sections revealing on scroll. The real value is in the HTML before any animation runs,
+and `prefers-reduced-motion` turns them off.
 
 Security headers (CSP, HSTS, frame and referrer policy) are defined once in
 `vercel.json`; `npm run preview` serves the same headers locally so a policy mistake shows

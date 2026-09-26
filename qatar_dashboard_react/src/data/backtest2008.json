@@ -1,0 +1,117 @@
+{
+  "documented_first_sighting": "2008-08-25",
+  "event_window": {
+    "start": "2008-08-01",
+    "end": "2009-05-31"
+  },
+  "step_days": 3,
+  "first_flagged_by_method": "2008-08-01",
+  "lead_time_vs_documented_days": 24,
+  "days_flagged": 96,
+  "flags_before_sighting": [
+    {
+      "date": "2008-08-01",
+      "km_to_origin": 89.2
+    },
+    {
+      "date": "2008-08-19",
+      "km_to_origin": 72.5
+    },
+    {
+      "date": "2008-08-22",
+      "km_to_origin": 71.1
+    }
+  ],
+  "usable_days": 102,
+  "total_days_in_window": 102,
+  "early_august_comparison": {
+    "check_days": [
+      1,
+      4,
+      7,
+      10,
+      13,
+      16,
+      19,
+      22
+    ],
+    "radius_km": 100,
+    "years": [
+      {
+        "year": 2008,
+        "checks": 8,
+        "checks_near_origin": 3
+      },
+      {
+        "year": 2003,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2004,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2005,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2006,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2007,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2009,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2010,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2011,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2012,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2013,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2014,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2015,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2016,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2017,
+        "checks": 8,
+        "checks_near_origin": 3
+      }
+    ]
+  }
+}

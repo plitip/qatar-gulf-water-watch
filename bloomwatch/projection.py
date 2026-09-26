@@ -11,8 +11,8 @@ same current holds for the whole window. Currents change day to day, so read the
 output as "if today's current kept going, this patch would be closest to the coast
 around day N", not as an arrival time.
 
-STATUS: the path math is tested on synthetic cases. CURRENTS_DATASET_ID is unconfirmed
-(see config.py), so this hasn't run against real current data yet.
+STATUS: the path math is tested on synthetic cases. The currents dataset ID is confirmed,
+but this hasn't been run against real current data yet.
 """
 
 import json

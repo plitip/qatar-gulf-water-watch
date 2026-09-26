@@ -45,7 +45,29 @@ it's a plain file.
 
 Offline tests (no login needed): `python -m pytest`
 
-## Scheduling on the laptop (Windows Task Scheduler)
+## Automatic daily run (GitHub Actions)
+
+`.github/workflows/daily.yml` runs `python -m bloomwatch daily` at 06:00 UTC every day,
+commits the results, and Vercel rebuilds the site from that commit. It needs the Copernicus
+login as two repository secrets. Set them yourself, from the repo folder (each command asks
+for the value, so it never appears in your shell history):
+
+```powershell
+gh secret set COPERNICUSMARINE_SERVICE_USERNAME
+gh secret set COPERNICUSMARINE_SERVICE_PASSWORD
+```
+
+Then start the first run by hand from the Actions tab ("Daily watch" > "Run workflow") and
+check it goes green. GitHub normally emails you when a scheduled workflow fails.
+
+## Reviewing a flag
+
+Flags are recorded in `data/alert_log.json`. Once you've looked into one (other satellite
+images, news, a fish-kill report), change its `"review"` from `"not reviewed"` to
+`"likely real"` or `"false alarm"` and push; the site shows the review. Any other value
+makes the next daily run stop with an error, on purpose.
+
+## Scheduling on the laptop instead (Windows Task Scheduler)
 
 Task Scheduler is built into Windows and runs a program on a schedule. Nothing in the
 repo creates the task; it has to be set up by hand.

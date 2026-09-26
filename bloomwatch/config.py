@@ -6,7 +6,7 @@ Tuning values that belong to one method (anomaly threshold, hotspot cutoff, tren
 slopes...) live next to that method in its own module instead.
 
 The intake coordinates are approximate and haven't been checked against the real
-facilities. Two of the four dataset IDs are unconfirmed; they're marked below.
+facilities. All four dataset IDs have been checked against the live catalogue.
 """
 
 from pathlib import Path
@@ -42,13 +42,18 @@ NRT_CHL_DATASET_ID = "cmems_obs-oc_glo_bgc-plankton_nrt_l4-gapfree-multi-4km_P1D
 # (product OCEANCOLOUR_GLO_BGC_L4_MY_009_104).
 MONTHLY_CHL_DATASET_ID = "cmems_obs-oc_glo_bgc-plankton_my_l4-multi-4km_P1M"
 
-# Daily reprocessed chlorophyll-a, for the 2008 backtest. UNCONFIRMED: assumed to be the
-# daily sibling of the monthly product above. Check it exists and reaches back to 2008.
-DAILY_REPROCESSED_CHL_DATASET_ID = "cmems_obs-oc_glo_bgc-plankton_my_l4-multi-4km_P1D"
+# Daily reprocessed gap-free chlorophyll-a, 1997 to a few weeks ago. Used for each pixel's
+# "normal" and for the 2008 backtest. Confirmed 2026-09-26 (time range 1997-09-04 onward).
+# The ID first assumed here, "..._my_l4-multi-4km_P1D" without "gapfree", doesn't exist.
+DAILY_REPROCESSED_CHL_DATASET_ID = "cmems_obs-oc_glo_bgc-plankton_my_l4-gapfree-multi-4km_P1D"
 
 # Ocean surface currents (GLOBAL_ANALYSISFORECAST_PHY_001_024, "cur" split).
-# UNCONFIRMED: best-known match, not yet checked against the live catalogue.
+# Confirmed 2026-09-26 (variables uo/vo, time range 2022-06-01 onward).
 CURRENTS_DATASET_ID = "cmems_mod_glo_phy-cur_anfc_0.083deg_P1D-m"
+
+# Years that define "normal" for each pixel. 2026 is left out so this year's data is
+# compared against past years, not partly against itself.
+NORMAL_YEARS = range(2018, 2026)
 
 CHL_VARIABLE = "CHL"
 CURRENT_U_VARIABLE = "uo"  # eastward velocity, m/s
@@ -70,5 +75,11 @@ GULF_SNAPSHOT_FILE = DATA_DIR / "gulf_bloom_watch.json"
 GULF_TRAJECTORY_FILE = DATA_DIR / "gulf_bloom_trajectory.json"
 PROJECTION_FILE = DATA_DIR / "gulf_bloom_prediction.json"
 BACKTEST_FILE = DATA_DIR / "backtest_2008_red_tide.json"
+ALERT_LOG_FILE = DATA_DIR / "alert_log.json"  # every flag ever raised; kept in git
 
+# What the dashboards read. The React app bundles its data at build time, so the daily
+# run writes these files and commits them, and the host rebuilds the site.
 STATIC_DASHBOARD_HTML = REPO_ROOT / "qatar_dashboard" / "index.html"
+REACT_DATA_DIR = REPO_ROOT / "qatar_dashboard_react" / "src" / "data"
+# Large files the site loads only when needed (not bundled into the page's JavaScript).
+REACT_PUBLIC_DATA_DIR = REPO_ROOT / "qatar_dashboard_react" / "public" / "data"

@@ -10,6 +10,8 @@ Satellites can see chlorophyll building up in the water days before a bloom hits
 coast. So I built this to watch Qatar's three largest intakes (Ras Laffan, Ras Abu Fontas
 and Umm Al Houl) using free satellite data, and flag anything unusual.
 
+Live site: https://qatar-gulf-water-watch.vercel.app
+
 ![React dashboard, dark mode](docs/screenshots/react_dashboard_dark.png)
 
 ## What it does
@@ -22,10 +24,16 @@ Chlorophyll here goes up every summer, so a spike in August doesn't mean much by
 That's why the dashboard compares each month with the same month in past years instead of
 a year-round average. Otherwise every normal summer would show up as a warning.
 
-It also scans the wider Gulf, from the Strait of Hormuz to Qatar, for hotspots and checks
-whether the nearest one is getting closer over ten days. There's also a backtest that runs
-the same detector on the real 2008 bloom, to see how much warning it would have actually
-given.
+It also scans the wider Gulf, from the Strait of Hormuz to Qatar, for patches of water that
+are unusual for that exact spot and time of year, and checks whether the nearest one is
+getting closer over ten days. A GitHub Actions workflow is set up to run all of this every
+morning and record anything it flags on the website.
+
+There's also a backtest that runs the same check on the real 2008 bloom. It picked out
+water about 70 km from where the bloom started on 19 and 22 August 2008, a few days before
+the bloom was first reported. To see if that meant anything, I ran the same check on the
+same weeks of August in 14 other years, and it found anything like that in only one of them
+(2017). The website has a map you can play through, check by check, for the whole bloom.
 
 There's no trained ML model, and that's on purpose. The region only has one or two
 documented bloom events, which isn't enough to learn anything real from. A model trained
@@ -39,9 +47,9 @@ This is a prototype. It isn't an operational warning system yet.
 | Part | State |
 |---|---|
 | Daily intake check, 2018–2026 monthly history | Run on real Copernicus data |
-| Wider-Gulf scan, 10-day trajectory | Run on real data, but the hotspot rule needs fixing |
-| Current projection, 2008 backtest | Only tested on made-up data so far |
-| Two dataset IDs (currents, daily 2008 archive) | Not confirmed yet |
+| Wider-Gulf scan, 10-day trajectory | Run on real data; the hotspot rule was redesigned after the first real runs |
+| 2008 backtest | Run on real 2008 data, compared with the same weeks in 14 other years |
+| Current projection | Only tested on made-up data so far |
 | Intake coordinates, alert thresholds | Approximate, not tuned |
 
 What's left to do is in [ROADMAP.md](docs/ROADMAP.md).

@@ -1,42 +1,42 @@
 import { useEffect, useState } from "react";
-import StatCards from "./components/StatCards.jsx";
-import ChlorophyllChart from "./components/ChlorophyllChart.jsx";
-import GulfPanel from "./components/GulfPanel.jsx";
+import IntakeOverview from "./components/IntakeOverview.jsx";
+import LatestCheck from "./components/LatestCheck.jsx";
+import RedTide2008 from "./components/RedTide2008.jsx";
+import StatusLine from "./components/StatusLine.jsx";
 import ThemeToggle from "./components/ThemeToggle.jsx";
-import HistoryPanel from "./components/HistoryPanel.jsx";
-import SplitText from "./animations/SplitText.jsx";
 import Reveal from "./animations/Reveal.jsx";
-import WaveLine from "./animations/WaveLine.jsx";
 import { CHL_HISTORY } from "./data/chlHistory.js";
+import backtest2008 from "./data/backtest2008.json";
 import gulfTrajectory from "./data/gulfTrajectory.json";
+import status from "./data/status.json";
 
 const SITES = ["Ras Laffan", "Ras Abu Fontas", "Umm Al Houl"];
-const COLOR_VAR = {
-  "Ras Laffan": "--series-1",
-  "Ras Abu Fontas": "--series-2",
-  "Umm Al Houl": "--series-3",
-};
+const REPO_URL = "https://github.com/plitip/qatar-gulf-water-watch";
+
+function storedTheme() {
+  try {
+    return localStorage.getItem("gww-theme") || "auto";
+  } catch {
+    return "auto"; // storage blocked (private browsing, strict settings)
+  }
+}
 
 export default function App() {
-  const [theme, setTheme] = useState(() => localStorage.getItem("gww-theme") || "auto");
+  const [theme, setTheme] = useState(storedTheme);
 
   useEffect(() => {
-    if (theme === "auto") {
-      document.documentElement.removeAttribute("data-theme");
-    } else {
-      document.documentElement.setAttribute("data-theme", theme);
-    }
+    if (theme === "auto") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", theme);
     try {
       localStorage.setItem("gww-theme", theme);
     } catch {
-      /* ignore (private browsing, storage disabled, etc.) */
+      /* storage blocked: the choice just won't be remembered */
     }
   }, [theme]);
 
   function toggleTheme() {
     setTheme((prev) => {
-      // cycles auto -> the opposite of system preference -> back to auto,
-      // so one click always visibly flips the page regardless of OS setting
+      // auto -> the opposite of the system setting -> back to auto, so one click always flips the page
       const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       if (prev === "auto") return systemDark ? "light" : "dark";
       return "auto";
@@ -44,58 +44,58 @@ export default function App() {
   }
 
   return (
-    <div className="wrap">
-      <ThemeToggle theme={theme} onToggle={toggleTheme} />
-
-      <header className="page-head">
-        <Reveal as="span" className="eyebrow" y={8}>
-          Qatar · Desalination Intake Monitoring
-        </Reveal>
-        <SplitText text="Gulf Water Watch" delay={0.1} />
-        <WaveLine />
-        <Reveal as="p" className="dek" y={12}>
-          Satellite-derived chlorophyll-a near Qatar's three largest desalination intakes — Ras Laffan, Ras Abu
-          Fontas, and Umm Al Houl — tracked monthly since 2018 for early signs of harmful algal blooms ("red tide")
-          before they can clog intake filters.
-        </Reveal>
+    <div className="page">
+      <header className="masthead">
+        <div>
+          <h1>Gulf Water Watch</h1>
+          <p className="intro">
+            Satellite readings of chlorophyll at Qatar's three largest desalination intakes. Qatar gets almost all
+            of its drinking water from desalination, and a large algal bloom can clog a plant's seawater intake.
+          </p>
+        </div>
+        <ThemeToggle theme={theme} onToggle={toggleTheme} />
       </header>
+      <StatusLine status={status} />
 
-      <StatCards data={CHL_HISTORY} sites={SITES} colorVar={COLOR_VAR} />
+      <main>
+        <IntakeOverview data={CHL_HISTORY} sites={SITES} />
+        <LatestCheck status={status} trajectory={gulfTrajectory} />
+        <RedTide2008 backtest={backtest2008} theme={theme} />
 
-      <Reveal>
-        <ChlorophyllChart data={CHL_HISTORY} sites={SITES} colorVar={COLOR_VAR} />
-      </Reveal>
+        <Reveal as="section" className="section" aria-labelledby="about-data">
+          <h2 id="about-data">About the data</h2>
+          <dl className="facts">
+            <dt>Source</dt>
+            <dd>
+              Chlorophyll-a from the{" "}
+              <a href="https://marine.copernicus.eu" target="_blank" rel="noopener noreferrer">
+                Copernicus Marine Service
+              </a>
+              , combined from several ocean-colour satellites on a 4 km grid.
+            </dd>
+            <dt>At each intake</dt>
+            <dd>The average of the two or three 4 km satellite squares nearest an estimated intake location.</dd>
+            <dt>Usual range</dt>
+            <dd>The average for that calendar month from 2018 to 2025, plus or minus two standard deviations.</dd>
+            <dt>Wider Gulf</dt>
+            <dd>
+              A patch counts as unusual when at least four neighbouring 4 km squares are each above 3 mg/m³ and more
+              than three standard deviations above their own normal for that month.
+            </dd>
+            <dt>Limits</dt>
+            <dd>
+              The intake locations are estimates, and the readings haven't been compared with water samples. Dust,
+              sediment and a shallow seabed can all affect satellite colour readings near the coast.
+            </dd>
+          </dl>
+        </Reveal>
+      </main>
 
-      <Reveal>
-        <GulfPanel trajectory={gulfTrajectory} />
-      </Reveal>
-
-      <Reveal>
-        <HistoryPanel />
-      </Reveal>
-
-      <Reveal as="footer" className="notes" y={12}>
-        <div>
-          Data: Copernicus Marine Service ocean-colour chlorophyll-a (ESA Sentinel-3 / multi-sensor, 4km, gap-free
-          reprocessed product), sampled in a ~5km box around each intake's approximate coordinates.
-        </div>
-        <div>
-          Status pill compares the most recent reading against that site's own history for the{" "}
-          <em>same calendar month</em> (mean ± 2 standard deviations of prior years' Augusts, Julys, etc.) — not a
-          fixed threshold and not an all-months average — because chlorophyll here follows a strong seasonal cycle,
-          and a global baseline would flag every normal warm season as "high."
-        </div>
-        <div>
-          Gulf-wide trajectory: same-day statistical outliers (top 5% chlorophyll, above a 3.0 mg/m³ floor) scanned
-          across the wider Strait of Hormuz–to–Qatar corridor, tracking the nearest one's distance to Qatar's coast
-          day over day. A prototype signal, not a tracked/tagged patch of water — see{" "}
-          <span className="mono">bloomwatch/gulf.py</span> for caveats.
-        </div>
-        <div>
-          <strong>Prototype, not an operational warning system.</strong> Intake coordinates are approximate and
-          unverified against the real facilities; thresholds are untuned against confirmed historical bloom events.
-        </div>
-      </Reveal>
+      <footer className="colophon">
+        <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
+          Code and method on GitHub
+        </a>
+      </footer>
     </div>
   );
 }

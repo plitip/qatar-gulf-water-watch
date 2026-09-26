@@ -1,0 +1,58 @@
+name: Daily watch
+
+# Runs the pipeline once a day and commits what it found; the commit makes Vercel rebuild
+# the site with the new data. Needs two repository secrets (Settings > Secrets and
+# variables > Actions): COPERNICUSMARINE_SERVICE_USERNAME and COPERNICUSMARINE_SERVICE_PASSWORD.
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # 06:00 UTC, 09:00 in Qatar; satellite data lags a day or two anyway
+  workflow_dispatch: # lets you start a run by hand from the Actions tab
+
+permissions:
+  contents: write # to commit the results
+
+concurrency:
+  group: daily-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - run: pip install -e .
+
+      # Downloaded scenes and each month's "normal" are kept between runs, so a day only
+      # downloads what's new.
+      - uses: actions/cache@v4
+        with:
+          path: data/cache
+          key: scenes-${{ github.run_id }}
+          restore-keys: scenes-
+
+      - name: Run the daily watch
+        env:
+          COPERNICUSMARINE_SERVICE_USERNAME: ${{ secrets.COPERNICUSMARINE_SERVICE_USERNAME }}
+          COPERNICUSMARINE_SERVICE_PASSWORD: ${{ secrets.COPERNICUSMARINE_SERVICE_PASSWORD }}
+        run: python -m bloomwatch daily
+
+      - name: Commit the results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/chl_history.json data/alert_log.json qatar_dashboard/index.html qatar_dashboard_react/src/data
+          if git diff --cached --quiet; then
+            echo "Nothing new today."
+          else
+            git commit -m "Daily watch for $(date -u +%Y-%m-%d)"
+            git push
+          fi

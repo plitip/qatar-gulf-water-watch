@@ -5,9 +5,12 @@
 *.env
 .netrc
 
-# Pipeline output: downloaded scenes and daily results (all regenerable).
-# The 2008 backtest result is kept, because it's a finding worth versioning.
+# Pipeline output: downloaded scenes and daily results (all regenerable), except what the
+# daily run needs to remember between runs (reading history, flag log) and the 2008
+# backtest result, which is a finding worth versioning.
 data/*
+!data/chl_history.json
+!data/alert_log.json
 !data/backtest_2008_red_tide.json
 
 # Python

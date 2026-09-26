@@ -104,24 +104,29 @@ def find_bloom_anomalies(readings: dict, history: dict, day: str) -> list[str]:
 
         mean, std = np.mean(past), np.std(past)
         if std > 0 and value > mean + BLOOM_ANOMALY_STD_THRESHOLD * std:
+            # Shown word for word in the dashboard's flag table, so it's written for a reader.
             alerts.append(
-                f"{site}: chlorophyll-a = {value:.2f} mg/m3, baseline {mean:.2f} +/- {std:.2f} "
-                f"-> {BLOOM_ANOMALY_STD_THRESHOLD:.0f} std devs above normal, possible bloom signal"
+                f"{site}: {value:.1f} mg/m³, against a recent daily average of {mean:.1f} "
+                f"(usual spread {std:.1f}, flag threshold {mean + BLOOM_ANOMALY_STD_THRESHOLD * std:.1f})"
             )
         else:
             log.info("%s: %.2f mg/m3 (within normal range)", site, value)
     return alerts
 
 
-def check_intakes(today: date | None = None) -> list[str]:
-    """The daily check, on the newest published scene. Returns any alert messages."""
+def check_intakes(today: date | None = None) -> dict:
+    """The daily check, on the newest published scene.
+
+    Returns {"scene_date", "readings": {site: mg/m3 or None}, "alerts": [message, ...]}.
+    """
     today = today or date.today()
     scene_path, scene_date = download_latest_day(download_intake_scene, today)
     if scene_date != today:
         log.info("Using most recent available scene: %s (data lags behind today)", scene_date)
 
     history = load_reading_history()
-    alerts = find_bloom_anomalies(sample_intake_readings(scene_path), history, scene_date.isoformat())
+    readings = sample_intake_readings(scene_path)
+    alerts = find_bloom_anomalies(readings, history, scene_date.isoformat())
     save_reading_history(history)
 
     if alerts:
@@ -131,7 +136,7 @@ def check_intakes(today: date | None = None) -> list[str]:
         # TODO: send a real notification (email or Telegram) once the threshold is validated.
     else:
         log.info("No bloom anomalies detected for %s.", scene_date)
-    return alerts
+    return {"scene_date": scene_date.isoformat(), "readings": readings, "alerts": alerts}
 
 
 def backfill_history(days: int = BACKFILL_DAYS, today: date | None = None) -> None:

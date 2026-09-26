@@ -1,0 +1,733 @@
+{
+  "event_window": {
+    "start": "2008-08-01",
+    "end": "2009-05-31"
+  },
+  "documented_first_sighting": "2008-08-25",
+  "step_days": 3,
+  "daily": [
+    {
+      "date": "2008-08-01",
+      "nearest_km_to_qatar": 525.9,
+      "nearest_km_to_origin": 89.2,
+      "hotspot_count": 116
+    },
+    {
+      "date": "2008-08-04",
+      "nearest_km_to_qatar": null,
+      "nearest_km_to_origin": null,
+      "hotspot_count": 0
+    },
+    {
+      "date": "2008-08-07",
+      "nearest_km_to_qatar": null,
+      "nearest_km_to_origin": null,
+      "hotspot_count": 0
+    },
+    {
+      "date": "2008-08-10",
+      "nearest_km_to_qatar": null,
+      "nearest_km_to_origin": null,
+      "hotspot_count": 0
+    },
+    {
+      "date": "2008-08-13",
+      "nearest_km_to_qatar": null,
+      "nearest_km_to_origin": null,
+      "hotspot_count": 0
+    },
+    {
+      "date": "2008-08-16",
+      "nearest_km_to_qatar": null,
+      "nearest_km_to_origin": null,
+      "hotspot_count": 0
+    },
+    {
+      "date": "2008-08-19",
+      "nearest_km_to_qatar": 506.6,
+      "nearest_km_to_origin": 72.5,
+      "hotspot_count": 8
+    },
+    {
+      "date": "2008-08-22",
+      "nearest_km_to_qatar": 502.5,
+      "nearest_km_to_origin": 71.1,
+      "hotspot_count": 28
+    },
+    {
+      "date": "2008-08-25",
+      "nearest_km_to_qatar": 502.1,
+      "nearest_km_to_origin": 66.7,
+      "hotspot_count": 51
+    },
+    {
+      "date": "2008-08-28",
+      "nearest_km_to_qatar": 502.5,
+      "nearest_km_to_origin": 71.1,
+      "hotspot_count": 23
+    },
+    {
+      "date": "2008-08-31",
+      "nearest_km_to_qatar": null,
+      "nearest_km_to_origin": null,
+      "hotspot_count": 0
+    },
+    {
+      "date": "2008-09-03",
+      "nearest_km_to_qatar": 30.0,
+      "nearest_km_to_origin": 446.4,
+      "hotspot_count": 12
+    },
+    {
+      "date": "2008-09-06",
+      "nearest_km_to_qatar": 30.0,
+      "nearest_km_to_origin": 450.0,
+      "hotspot_count": 36
+    },
+    {
+      "date": "2008-09-09",
+      "nearest_km_to_qatar": 121.9,
+      "nearest_km_to_origin": 487.1,
+      "hotspot_count": 26
+    },
+    {
+      "date": "2008-09-12",
+      "nearest_km_to_qatar": 96.8,
+      "nearest_km_to_origin": 411.5,
+      "hotspot_count": 28
+    },
+    {
+      "date": "2008-09-15",
+      "nearest_km_to_qatar": 80.6,
+      "nearest_km_to_origin": 480.6,
+      "hotspot_count": 103
+    },
+    {
+      "date": "2008-09-18",
+      "nearest_km_to_qatar": 83.6,
+      "nearest_km_to_origin": 477.4,
+      "hotspot_count": 91
+    },
+    {
+      "date": "2008-09-21",
+      "nearest_km_to_qatar": 77.2,
+      "nearest_km_to_origin": 262.0,
+      "hotspot_count": 419
+    },
+    {
+      "date": "2008-09-24",
+      "nearest_km_to_qatar": 77.2,
+      "nearest_km_to_origin": 86.5,
+      "hotspot_count": 416
+    },
+    {
+      "date": "2008-09-27",
+      "nearest_km_to_qatar": 61.6,
+      "nearest_km_to_origin": 60.9,
+      "hotspot_count": 73
+    },
+    {
+      "date": "2008-09-30",
+      "nearest_km_to_qatar": 113.6,
+      "nearest_km_to_origin": 67.1,
+      "hotspot_count": 51
+    },
+    {
+      "date": "2008-10-03",
+      "nearest_km_to_qatar": 79.7,
+      "nearest_km_to_origin": 76.9,
+      "hotspot_count": 223
+    },
+    {
+      "date": "2008-10-06",
+      "nearest_km_to_qatar": 94.6,
+      "nearest_km_to_origin": 21.0,
+      "hotspot_count": 113
+    },
+    {
+      "date": "2008-10-09",
+      "nearest_km_to_qatar": 75.3,
+      "nearest_km_to_origin": 38.4,
+      "hotspot_count": 72
+    },
+    {
+      "date": "2008-10-12",
+      "nearest_km_to_qatar": 427.3,
+      "nearest_km_to_origin": 114.9,
+      "hotspot_count": 33
+    },
+    {
+      "date": "2008-10-15",
+      "nearest_km_to_qatar": 360.2,
+      "nearest_km_to_origin": 51.1,
+      "hotspot_count": 143
+    },
+    {
+      "date": "2008-10-18",
+      "nearest_km_to_qatar": 350.8,
+      "nearest_km_to_origin": 71.3,
+      "hotspot_count": 331
+    },
+    {
+      "date": "2008-10-21",
+      "nearest_km_to_qatar": 327.4,
+      "nearest_km_to_origin": 56.1,
+      "hotspot_count": 184
+    },
+    {
+      "date": "2008-10-24",
+      "nearest_km_to_qatar": 221.1,
+      "nearest_km_to_origin": 54.6,
+      "hotspot_count": 443
+    },
+    {
+      "date": "2008-10-27",
+      "nearest_km_to_qatar": 193.2,
+      "nearest_km_to_origin": 47.6,
+      "hotspot_count": 475
+    },
+    {
+      "date": "2008-10-30",
+      "nearest_km_to_qatar": 331.2,
+      "nearest_km_to_origin": 48.4,
+      "hotspot_count": 249
+    },
+    {
+      "date": "2008-11-02",
+      "nearest_km_to_qatar": 149.5,
+      "nearest_km_to_origin": 44.8,
+      "hotspot_count": 390
+    },
+    {
+      "date": "2008-11-05",
+      "nearest_km_to_qatar": 237.0,
+      "nearest_km_to_origin": 42.1,
+      "hotspot_count": 631
+    },
+    {
+      "date": "2008-11-08",
+      "nearest_km_to_qatar": 192.5,
+      "nearest_km_to_origin": 57.5,
+      "hotspot_count": 601
+    },
+    {
+      "date": "2008-11-11",
+      "nearest_km_to_qatar": 131.5,
+      "nearest_km_to_origin": 73.6,
+      "hotspot_count": 648
+    },
+    {
+      "date": "2008-11-14",
+      "nearest_km_to_qatar": 130.9,
+      "nearest_km_to_origin": 10.5,
+      "hotspot_count": 1397
+    },
+    {
+      "date": "2008-11-17",
+      "nearest_km_to_qatar": 163.0,
+      "nearest_km_to_origin": 20.8,
+      "hotspot_count": 882
+    },
+    {
+      "date": "2008-11-20",
+      "nearest_km_to_qatar": 167.2,
+      "nearest_km_to_origin": 14.8,
+      "hotspot_count": 1554
+    },
+    {
+      "date": "2008-11-23",
+      "nearest_km_to_qatar": 231.7,
+      "nearest_km_to_origin": 18.5,
+      "hotspot_count": 1580
+    },
+    {
+      "date": "2008-11-26",
+      "nearest_km_to_qatar": 223.4,
+      "nearest_km_to_origin": 12.7,
+      "hotspot_count": 1271
+    },
+    {
+      "date": "2008-11-29",
+      "nearest_km_to_qatar": 203.9,
+      "nearest_km_to_origin": 18.5,
+      "hotspot_count": 1129
+    },
+    {
+      "date": "2008-12-02",
+      "nearest_km_to_qatar": 170.3,
+      "nearest_km_to_origin": 39.8,
+      "hotspot_count": 786
+    },
+    {
+      "date": "2008-12-05",
+      "nearest_km_to_qatar": 174.3,
+      "nearest_km_to_origin": 72.5,
+      "hotspot_count": 556
+    },
+    {
+      "date": "2008-12-08",
+      "nearest_km_to_qatar": 145.1,
+      "nearest_km_to_origin": 10.5,
+      "hotspot_count": 1474
+    },
+    {
+      "date": "2008-12-11",
+      "nearest_km_to_qatar": 131.9,
+      "nearest_km_to_origin": 25.3,
+      "hotspot_count": 1935
+    },
+    {
+      "date": "2008-12-14",
+      "nearest_km_to_qatar": 99.2,
+      "nearest_km_to_origin": 41.4,
+      "hotspot_count": 3186
+    },
+    {
+      "date": "2008-12-17",
+      "nearest_km_to_qatar": 111.1,
+      "nearest_km_to_origin": 65.6,
+      "hotspot_count": 1037
+    },
+    {
+      "date": "2008-12-20",
+      "nearest_km_to_qatar": 77.7,
+      "nearest_km_to_origin": 12.7,
+      "hotspot_count": 2566
+    },
+    {
+      "date": "2008-12-23",
+      "nearest_km_to_qatar": 74.0,
+      "nearest_km_to_origin": 17.6,
+      "hotspot_count": 3532
+    },
+    {
+      "date": "2008-12-26",
+      "nearest_km_to_qatar": 89.5,
+      "nearest_km_to_origin": 50.2,
+      "hotspot_count": 3266
+    },
+    {
+      "date": "2008-12-29",
+      "nearest_km_to_qatar": 89.4,
+      "nearest_km_to_origin": 33.6,
+      "hotspot_count": 3551
+    },
+    {
+      "date": "2009-01-01",
+      "nearest_km_to_qatar": 84.4,
+      "nearest_km_to_origin": 52.1,
+      "hotspot_count": 3195
+    },
+    {
+      "date": "2009-01-04",
+      "nearest_km_to_qatar": 93.2,
+      "nearest_km_to_origin": 49.4,
+      "hotspot_count": 1631
+    },
+    {
+      "date": "2009-01-07",
+      "nearest_km_to_qatar": 112.2,
+      "nearest_km_to_origin": 90.5,
+      "hotspot_count": 760
+    },
+    {
+      "date": "2009-01-10",
+      "nearest_km_to_qatar": 65.8,
+      "nearest_km_to_origin": 24.3,
+      "hotspot_count": 3147
+    },
+    {
+      "date": "2009-01-13",
+      "nearest_km_to_qatar": 86.7,
+      "nearest_km_to_origin": 47.1,
+      "hotspot_count": 1870
+    },
+    {
+      "date": "2009-01-16",
+      "nearest_km_to_qatar": 90.0,
+      "nearest_km_to_origin": 85.0,
+      "hotspot_count": 1551
+    },
+    {
+      "date": "2009-01-19",
+      "nearest_km_to_qatar": 91.4,
+      "nearest_km_to_origin": 108.2,
+      "hotspot_count": 1680
+    },
+    {
+      "date": "2009-01-22",
+      "nearest_km_to_qatar": 79.7,
+      "nearest_km_to_origin": 41.4,
+      "hotspot_count": 970
+    },
+    {
+      "date": "2009-01-25",
+      "nearest_km_to_qatar": 81.8,
+      "nearest_km_to_origin": 41.4,
+      "hotspot_count": 695
+    },
+    {
+      "date": "2009-01-28",
+      "nearest_km_to_qatar": 182.1,
+      "nearest_km_to_origin": 97.4,
+      "hotspot_count": 744
+    },
+    {
+      "date": "2009-01-31",
+      "nearest_km_to_qatar": 81.8,
+      "nearest_km_to_origin": 58.0,
+      "hotspot_count": 1354
+    },
+    {
+      "date": "2009-02-03",
+      "nearest_km_to_qatar": 101.8,
+      "nearest_km_to_origin": 54.1,
+      "hotspot_count": 926
+    },
+    {
+      "date": "2009-02-06",
+      "nearest_km_to_qatar": 55.3,
+      "nearest_km_to_origin": 99.2,
+      "hotspot_count": 853
+    },
+    {
+      "date": "2009-02-09",
+      "nearest_km_to_qatar": 78.0,
+      "nearest_km_to_origin": 41.4,
+      "hotspot_count": 1096
+    },
+    {
+      "date": "2009-02-12",
+      "nearest_km_to_qatar": 78.0,
+      "nearest_km_to_origin": 13.0,
+      "hotspot_count": 1406
+    },
+    {
+      "date": "2009-02-15",
+      "nearest_km_to_qatar": 79.7,
+      "nearest_km_to_origin": 24.3,
+      "hotspot_count": 995
+    },
+    {
+      "date": "2009-02-18",
+      "nearest_km_to_qatar": 98.0,
+      "nearest_km_to_origin": 93.0,
+      "hotspot_count": 230
+    },
+    {
+      "date": "2009-02-21",
+      "nearest_km_to_qatar": 83.7,
+      "nearest_km_to_origin": 98.9,
+      "hotspot_count": 122
+    },
+    {
+      "date": "2009-02-24",
+      "nearest_km_to_qatar": 149.8,
+      "nearest_km_to_origin": 98.9,
+      "hotspot_count": 43
+    },
+    {
+      "date": "2009-02-27",
+      "nearest_km_to_qatar": 385.1,
+      "nearest_km_to_origin": 41.5,
+      "hotspot_count": 148
+    },
+    {
+      "date": "2009-03-02",
+      "nearest_km_to_qatar": 97.9,
+      "nearest_km_to_origin": 126.0,
+      "hotspot_count": 130
+    },
+    {
+      "date": "2009-03-05",
+      "nearest_km_to_qatar": 108.0,
+      "nearest_km_to_origin": 264.4,
+      "hotspot_count": 131
+    },
+    {
+      "date": "2009-03-08",
+      "nearest_km_to_qatar": 233.6,
+      "nearest_km_to_origin": 85.0,
+      "hotspot_count": 139
+    },
+    {
+      "date": "2009-03-11",
+      "nearest_km_to_qatar": 250.2,
+      "nearest_km_to_origin": 117.4,
+      "hotspot_count": 88
+    },
+    {
+      "date": "2009-03-14",
+      "nearest_km_to_qatar": 516.5,
+      "nearest_km_to_origin": 150.8,
+      "hotspot_count": 23
+    },
+    {
+      "date": "2009-03-17",
+      "nearest_km_to_qatar": 219.2,
+      "nearest_km_to_origin": 515.6,
+      "hotspot_count": 17
+    },
+    {
+      "date": "2009-03-20",
+      "nearest_km_to_qatar": 219.2,
+      "nearest_km_to_origin": 42.5,
+      "hotspot_count": 305
+    },
+    {
+      "date": "2009-03-23",
+      "nearest_km_to_qatar": 219.2,
+      "nearest_km_to_origin": 42.5,
+      "hotspot_count": 144
+    },
+    {
+      "date": "2009-03-26",
+      "nearest_km_to_qatar": 219.2,
+      "nearest_km_to_origin": 42.5,
+      "hotspot_count": 144
+    },
+    {
+      "date": "2009-03-29",
+      "nearest_km_to_qatar": 219.2,
+      "nearest_km_to_origin": 119.8,
+      "hotspot_count": 74
+    },
+    {
+      "date": "2009-04-01",
+      "nearest_km_to_qatar": 290.0,
+      "nearest_km_to_origin": 17.6,
+      "hotspot_count": 103
+    },
+    {
+      "date": "2009-04-04",
+      "nearest_km_to_qatar": 244.5,
+      "nearest_km_to_origin": 17.6,
+      "hotspot_count": 115
+    },
+    {
+      "date": "2009-04-07",
+      "nearest_km_to_qatar": 244.5,
+      "nearest_km_to_origin": 90.5,
+      "hotspot_count": 244
+    },
+    {
+      "date": "2009-04-10",
+      "nearest_km_to_qatar": 289.6,
+      "nearest_km_to_origin": 29.4,
+      "hotspot_count": 256
+    },
+    {
+      "date": "2009-04-13",
+      "nearest_km_to_qatar": 250.5,
+      "nearest_km_to_origin": 106.5,
+      "hotspot_count": 242
+    },
+    {
+      "date": "2009-04-16",
+      "nearest_km_to_qatar": 150.4,
+      "nearest_km_to_origin": 106.5,
+      "hotspot_count": 297
+    },
+    {
+      "date": "2009-04-19",
+      "nearest_km_to_qatar": 83.5,
+      "nearest_km_to_origin": 79.7,
+      "hotspot_count": 223
+    },
+    {
+      "date": "2009-04-22",
+      "nearest_km_to_qatar": 146.5,
+      "nearest_km_to_origin": 79.7,
+      "hotspot_count": 161
+    },
+    {
+      "date": "2009-04-25",
+      "nearest_km_to_qatar": 78.5,
+      "nearest_km_to_origin": 63.5,
+      "hotspot_count": 244
+    },
+    {
+      "date": "2009-04-28",
+      "nearest_km_to_qatar": 78.5,
+      "nearest_km_to_origin": 71.0,
+      "hotspot_count": 123
+    },
+    {
+      "date": "2009-05-01",
+      "nearest_km_to_qatar": 75.3,
+      "nearest_km_to_origin": 46.4,
+      "hotspot_count": 163
+    },
+    {
+      "date": "2009-05-04",
+      "nearest_km_to_qatar": 152.1,
+      "nearest_km_to_origin": 46.4,
+      "hotspot_count": 51
+    },
+    {
+      "date": "2009-05-07",
+      "nearest_km_to_qatar": 475.1,
+      "nearest_km_to_origin": 153.5,
+      "hotspot_count": 13
+    },
+    {
+      "date": "2009-05-10",
+      "nearest_km_to_qatar": 303.7,
+      "nearest_km_to_origin": 153.5,
+      "hotspot_count": 20
+    },
+    {
+      "date": "2009-05-13",
+      "nearest_km_to_qatar": 81.6,
+      "nearest_km_to_origin": 68.7,
+      "hotspot_count": 53
+    },
+    {
+      "date": "2009-05-16",
+      "nearest_km_to_qatar": 79.7,
+      "nearest_km_to_origin": 64.6,
+      "hotspot_count": 87
+    },
+    {
+      "date": "2009-05-19",
+      "nearest_km_to_qatar": 77.5,
+      "nearest_km_to_origin": 68.7,
+      "hotspot_count": 149
+    },
+    {
+      "date": "2009-05-22",
+      "nearest_km_to_qatar": 76.5,
+      "nearest_km_to_origin": 67.8,
+      "hotspot_count": 254
+    },
+    {
+      "date": "2009-05-25",
+      "nearest_km_to_qatar": 69.2,
+      "nearest_km_to_origin": 42.0,
+      "hotspot_count": 276
+    },
+    {
+      "date": "2009-05-28",
+      "nearest_km_to_qatar": 141.5,
+      "nearest_km_to_origin": 42.5,
+      "hotspot_count": 142
+    },
+    {
+      "date": "2009-05-31",
+      "nearest_km_to_qatar": 195.6,
+      "nearest_km_to_origin": 44.9,
+      "hotspot_count": 93
+    }
+  ],
+  "summary": {
+    "first_flagged_by_method": "2008-08-01",
+    "lead_time_vs_documented_days": 24,
+    "days_flagged": 96,
+    "flags_before_sighting": [
+      {
+        "date": "2008-08-01",
+        "km_to_origin": 89.2
+      },
+      {
+        "date": "2008-08-19",
+        "km_to_origin": 72.5
+      },
+      {
+        "date": "2008-08-22",
+        "km_to_origin": 71.1
+      }
+    ],
+    "usable_days": 102,
+    "total_days_in_window": 102
+  },
+  "early_august_comparison": {
+    "check_days": [
+      1,
+      4,
+      7,
+      10,
+      13,
+      16,
+      19,
+      22
+    ],
+    "radius_km": 100,
+    "years": [
+      {
+        "year": 2008,
+        "checks": 8,
+        "checks_near_origin": 3
+      },
+      {
+        "year": 2003,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2004,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2005,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2006,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2007,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2009,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2010,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2011,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2012,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2013,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2014,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2015,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2016,
+        "checks": 8,
+        "checks_near_origin": 0
+      },
+      {
+        "year": 2017,
+        "checks": 8,
+        "checks_near_origin": 3
+      }
+    ]
+  }
+}
