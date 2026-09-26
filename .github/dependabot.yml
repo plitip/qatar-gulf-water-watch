@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /qatar_dashboard_react
+    schedule:
+      interval: monthly
+  - package-ecosystem: pip
+    directory: /qatar_bloom_watch
+    schedule:
+      interval: monthly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

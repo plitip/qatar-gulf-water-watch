@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pipeline-tests:
+    name: Python pipeline (offline tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: qatar_bloom_watch
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # Only numpy is needed offline: copernicusmarine/xarray are imported inside
+      # the download functions, which these tests never call.
+      - run: pip install numpy
+      - run: python test_offline_logic.py
+
+  dashboard:
+    name: React dashboard (lint + build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: qatar_dashboard_react
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: qatar_dashboard_react/package-lock.json
+      - run: npm ci
+      - run: npm audit --audit-level=high
+      - run: npm run lint
+      - run: npm run build
