@@ -99,17 +99,19 @@ since 2018 at all three intakes), the three intakes with one small chart each (2
 line over the usual 2018–2025 range as a shaded band, hover and keyboard readable), the
 monthly numbers as a table, the latest satellite check with the flag log, the 2008 red
 tide with the backtest result, and a short "About the data". Components:
-`StatusLine`, `IntakeOverview`, `SeasonalChart`, `MonthlyTable`, `LatestCheck`, `RedTide2008`, `RedTideMap`,
-`ThemeToggle`. Data in `src/data/`: `chlHistory.js` (monthly history), and
+`StatusLine`, `IntakeOverview`, `SeasonalChart`, `MonthlyTable`, `LatestCheck`, `RedTide2008`, `RedTideMap`.
+Data in `src/data/`: `chlHistory.js` (monthly history), and
 `status.json`, `gulfTrajectory.json`, `backtest2008.json`, all written by `publish.py`. The
 2008 map frames (~540 KB, ~60 KB gzipped) are `public/data/redtide2008.json`, fetched only
 when that section comes near the screen: one character per three satellite squares, each
 square one of land / normal / well above normal / flagged.
 A section with no data doesn't render at all.
 
-Design rules it follows: one typeface (Public Sans), no boxes around sections, one
-decimal place, dates written out ("August 2026"), and colour with three jobs only: ink
-for text, grey for the usual range, blue for this year. The page describes findings, not
+Design rules it follows: a light-only newspaper look (masthead and dateline, ruled sections,
+a paper grain and soft crease texture), Playfair Display for headlines and Source Serif 4 for
+text, one decimal place, dates written out ("August 2026"), and one palette: Morning Mist
+paper (#F7F9E1), Teal Waters ink and 2026 line (#204654), Glacial Sky for the usual range
+(#A9E0F1), Spring Meadow as highlighter and map land (#CAFFA6). The page describes findings, not
 the code; file names and implementation notes stay in these docs.
 
 Animations use GSAP in `src/animations/`: numbers counting up, chart lines drawing in, and

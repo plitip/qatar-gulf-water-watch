@@ -1,59 +1,29 @@
-/* One typeface, no cards. Structure comes from spacing and type size.
-   Colour has three jobs only: ink for text, grey for "the usual range", blue for "this year". */
+/* Newspaper look on one light palette: Morning Mist paper, Teal Waters ink, Glacial Sky for
+   "the usual range", Spring Meadow as a highlighter and land. Headlines in Playfair Display,
+   text in Source Serif 4. */
 
 :root {
   color-scheme: light;
-  --page: #fbfbf9;
-  --ink: #141413;
-  --ink-2: #4a4945;
-  --ink-3: #6b6a65;
-  --rule: #e2e1da;
-  --grid: #ebeae4;
-  --band: #dddbd2;
-  --line: #2a78d6;
-  --tip-bg: #ffffff;
-  --tip-shadow: rgba(20, 20, 19, 0.08);
-  /* 2008 map: an ordinal ramp in one hue (validated), plus neutral land and sea */
-  --map-land: #dcd9cf;
-  --map-sea: #eaeef0;
-  --map-above: #e38b4c;
-  --map-flagged: #b93d0d;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --page: #141413;
-    --ink: #f2f1ec;
-    --ink-2: #c3c2b7;
-    --ink-3: #9a998f;
-    --rule: #2e2d2a;
-    --grid: #262523;
-    --band: #3a3935;
-    --line: #3987e5;
-    --tip-bg: #1f1f1d;
-    --tip-shadow: rgba(0, 0, 0, 0.4);
-    --map-land: #3b3a36;
-    --map-sea: #1a2226;
-    --map-above: #8f4b20;
-    --map-flagged: #f27d42;
-  }
-}
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --page: #141413;
-  --ink: #f2f1ec;
-  --ink-2: #c3c2b7;
-  --ink-3: #9a998f;
-  --rule: #2e2d2a;
-  --grid: #262523;
-  --band: #3a3935;
-  --line: #3987e5;
-  --tip-bg: #1f1f1d;
-  --tip-shadow: rgba(0, 0, 0, 0.4);
-  --map-land: #3b3a36;
-  --map-sea: #1a2226;
-  --map-above: #8f4b20;
-  --map-flagged: #f27d42;
+  --page: #f7f9e1;            /* Morning Mist */
+  --ink: #17262c;
+  --ink-2: #3f5258;
+  --ink-3: #5f7176;
+  --teal: #204654;            /* Teal Waters */
+  --rule: #d3d9c0;
+  --grid: #e2e6cf;
+  --band: #a9e0f1;            /* Glacial Sky */
+  --line: #204654;
+  --highlight: #caffa6;       /* Spring Meadow */
+  --tip-bg: #fbfcef;
+  --tip-shadow: rgba(23, 38, 44, 0.12);
+  /* 2008 map, all from the palette: pale sea, Glacial Sky (one step deeper so it reads on
+     the paper), Teal Waters for flagged, muted Spring Meadow land */
+  --map-land: #d9e8c2;
+  --map-sea: #edf6f3;
+  --map-above: #5ab0cf;
+  --map-flagged: #204654;
+  --serif-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --serif-text: "Source Serif 4", Georgia, "Times New Roman", serif;
 }
 
 * {
@@ -61,10 +31,16 @@
 }
 body {
   margin: 0;
-  background: var(--page);
+  /* paper: a fine grain over a faint uneven tone */
+  background-color: var(--page);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.09 0 0 0 0 0.15 0 0 0 0 0.17 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 20% 10%, rgba(255, 255, 255, 0.55), transparent 55%),
+    radial-gradient(ellipse at 85% 70%, rgba(32, 70, 84, 0.05), transparent 60%);
+  background-attachment: fixed;
   color: var(--ink);
-  font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 17px;
+  font-family: var(--serif-text);
+  font-size: 18px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
@@ -111,7 +87,6 @@ h1 {
   color: var(--ink-2);
   font-size: 18px;
 }
-.theme-toggle,
 .text-button {
   padding: 4px 0;
   border: none;
@@ -128,7 +103,6 @@ h1 {
   color: var(--ink);
   font-size: 16px;
 }
-.theme-toggle:hover,
 .text-button:hover {
   color: var(--line);
 }
@@ -580,4 +554,197 @@ tbody th {
   .label-extra {
     display: none;
   }
+}
+
+/* --- Newspaper treatment -------------------------------------------------------------- */
+h1,
+h2,
+.headline,
+.map-date,
+.figure-value {
+  font-family: var(--serif-display);
+  color: var(--teal);
+}
+.masthead {
+  display: block;
+  text-align: center;
+  border-top: 4px solid var(--teal);
+  padding-top: 10px;
+}
+.dateline {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 6px 0;
+  border-top: 1px solid var(--teal);
+  border-bottom: 1px solid var(--teal);
+  color: var(--ink-2);
+  font-size: 14px;
+  font-style: italic;
+}
+.masthead h1 {
+  margin: 18px 0 14px;
+  font-size: clamp(44px, 8vw, 84px);
+  font-weight: 900;
+  letter-spacing: -0.015em;
+  line-height: 1;
+}
+.masthead .intro {
+  max-width: 62ch;
+  margin: 0 auto;
+  padding-bottom: 18px;
+  border-bottom: 3px double var(--teal);
+  font-style: italic;
+}
+.status-line {
+  text-align: center;
+}
+.status-line strong {
+  padding: 0 4px;
+  background: var(--highlight);
+  color: var(--teal);
+}
+.headline {
+  max-width: 30ch;
+  font-size: clamp(30px, 4.4vw, 46px);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+.section {
+  padding-top: 14px;
+  border-top: 2px solid var(--teal);
+}
+.section h2 {
+  font-size: clamp(26px, 3.4vw, 34px);
+  font-weight: 700;
+}
+.intake h3 {
+  font-family: var(--serif-text);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.figure-value {
+  font-weight: 700;
+  font-variant-numeric: lining-nums;
+}
+@media (min-width: 900px) {
+  .prose {
+    column-count: 2;
+    column-gap: 44px;
+    column-rule: 1px solid var(--rule);
+  }
+  .prose p {
+    max-width: none;
+    break-inside: avoid-column;
+  }
+}
+.colophon {
+  border-top: 3px double var(--teal);
+  font-style: italic;
+}
+.play-button {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+.play-button:hover {
+  background: var(--teal);
+  color: var(--page);
+}
+.map-slider input {
+  accent-color: var(--teal);
+}
+.timeline-bar.is-current {
+  fill: var(--teal);
+}
+.text-button {
+  color: var(--teal);
+}
+::selection {
+  background: var(--highlight);
+}
+
+/* --- Crumpled paper: soft lit wrinkles over the whole page, multiplied onto the paper --- */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='1400'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.0016 0.0026' numOctaves='3' seed='11'/%3E%3CfeDiffuseLighting lighting-color='%23ffffff' surfaceScale='14'%3E%3CfeDistantLight azimuth='225' elevation='48'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E");
+  background-size: 1400px 1400px;
+  mix-blend-mode: multiply;
+  opacity: 0.36;
+}
+body {
+  position: relative;
+  z-index: 0;
+}
+
+/* --- More newspaper -------------------------------------------------------------------- */
+.masthead-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+}
+.ear {
+  padding: 8px 10px;
+  border-left: 1px solid var(--teal);
+  border-right: 1px solid var(--teal);
+  color: var(--teal);
+  font-size: 13px;
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.ear-left {
+  justify-self: start;
+}
+.ear-right {
+  justify-self: end;
+}
+@media (max-width: 700px) {
+  .masthead-row {
+    grid-template-columns: 1fr;
+  }
+  .ear {
+    display: none;
+  }
+}
+.prose p,
+.headline-note {
+  text-align: justify;
+  hyphens: auto;
+}
+.prose p:first-child::first-letter {
+  float: left;
+  margin: 6px 8px 0 0;
+  color: var(--teal);
+  font-family: var(--serif-display);
+  font-size: 3.4em;
+  font-weight: 900;
+  line-height: 0.8;
+}
+.headline-note {
+  max-width: 68ch;
+}
+.timeline-bar {
+  fill: var(--teal);
+}
+/* the selected date: Glacial Sky against the teal bars */
+.timeline-bar.is-current {
+  fill: var(--map-above);
+}
+.redtide-map .map-frame {
+  outline: 1px solid var(--teal);
+  outline-offset: 4px;
+}
+.map-caption .map-note {
+  font-style: italic;
 }

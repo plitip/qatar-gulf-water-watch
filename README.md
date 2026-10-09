@@ -12,7 +12,7 @@ and Umm Al Houl) using free satellite data, and flag anything unusual.
 
 Live site: https://qatar-gulf-water-watch.vercel.app
 
-![React dashboard, dark mode](docs/screenshots/react_dashboard_dark.png)
+![Gulf Water Watch dashboard](docs/screenshots/dashboard.png)
 
 ## What it does
 

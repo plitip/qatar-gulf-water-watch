@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import IntakeOverview from "./components/IntakeOverview.jsx";
 import LatestCheck from "./components/LatestCheck.jsx";
 import RedTide2008 from "./components/RedTide2008.jsx";
 import StatusLine from "./components/StatusLine.jsx";
-import ThemeToggle from "./components/ThemeToggle.jsx";
 import Reveal from "./animations/Reveal.jsx";
 import { CHL_HISTORY } from "./data/chlHistory.js";
 import backtest2008 from "./data/backtest2008.json";
@@ -13,54 +11,42 @@ import status from "./data/status.json";
 const SITES = ["Ras Laffan", "Ras Abu Fontas", "Umm Al Houl"];
 const REPO_URL = "https://github.com/plitip/qatar-gulf-water-watch";
 
-function storedTheme() {
-  try {
-    return localStorage.getItem("gww-theme") || "auto";
-  } catch {
-    return "auto"; // storage blocked (private browsing, strict settings)
-  }
+// The dateline is the day of the latest check, like a newspaper's issue date.
+function issueDate() {
+  if (!status) return "";
+  return new Date(status.last_run_utc).toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "Asia/Qatar",
+  });
 }
 
 export default function App() {
-  const [theme, setTheme] = useState(storedTheme);
-
-  useEffect(() => {
-    if (theme === "auto") document.documentElement.removeAttribute("data-theme");
-    else document.documentElement.setAttribute("data-theme", theme);
-    try {
-      localStorage.setItem("gww-theme", theme);
-    } catch {
-      /* storage blocked: the choice just won't be remembered */
-    }
-  }, [theme]);
-
-  function toggleTheme() {
-    setTheme((prev) => {
-      // auto -> the opposite of the system setting -> back to auto, so one click always flips the page
-      const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      if (prev === "auto") return systemDark ? "light" : "dark";
-      return "auto";
-    });
-  }
-
   return (
     <div className="page">
       <header className="masthead">
-        <div>
+        <p className="dateline">
+          <span>Doha, Qatar</span>
+          <span>{issueDate()}</span>
+        </p>
+        <div className="masthead-row">
+          <span className="ear ear-left">Satellite edition</span>
           <h1>Gulf Water Watch</h1>
-          <p className="intro">
-            Satellite readings of chlorophyll at Qatar's three largest desalination intakes. Qatar gets almost all
-            of its drinking water from desalination, and a large algal bloom can clog a plant's seawater intake.
-          </p>
+          <span className="ear ear-right">Updated daily</span>
         </div>
-        <ThemeToggle theme={theme} onToggle={toggleTheme} />
+        <p className="intro">
+          Satellite readings of chlorophyll at Qatar's three largest desalination intakes. Qatar gets almost all of
+          its drinking water from desalination, and a large algal bloom can clog a plant's seawater intake.
+        </p>
       </header>
       <StatusLine status={status} />
 
       <main>
         <IntakeOverview data={CHL_HISTORY} sites={SITES} />
         <LatestCheck status={status} trajectory={gulfTrajectory} />
-        <RedTide2008 backtest={backtest2008} theme={theme} />
+        <RedTide2008 backtest={backtest2008} />
 
         <Reveal as="section" className="section" aria-labelledby="about-data">
           <h2 id="about-data">About the data</h2>
