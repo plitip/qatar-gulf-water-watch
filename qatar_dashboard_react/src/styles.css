@@ -4,7 +4,8 @@
 
 :root {
   color-scheme: light;
-  --page: #f7f9e1;            /* Morning Mist */
+  --paper: #f7f9e1;           /* Morning Mist: the crumpled background */
+  --page: #ffffff;            /* the white sheet the content sits on */
   --ink: #17262c;
   --ink-2: #3f5258;
   --ink-3: #5f7176;
@@ -32,7 +33,7 @@
 body {
   margin: 0;
   /* paper: a fine grain over a faint uneven tone */
-  background-color: var(--page);
+  background-color: var(--paper);
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.09 0 0 0 0 0.15 0 0 0 0 0.17 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
     radial-gradient(ellipse at 20% 10%, rgba(255, 255, 255, 0.55), transparent 55%),
@@ -747,4 +748,55 @@ body {
 }
 .map-caption .map-note {
   font-style: italic;
+}
+
+/* --- The white sheet: all content sits on it, lifted off the crumpled paper ----------- */
+.page {
+  margin: 48px auto;
+  padding: 48px 56px 40px;
+  background: var(--page);
+  box-shadow:
+    0 1px 2px rgba(23, 38, 44, 0.08),
+    0 8px 24px rgba(23, 38, 44, 0.1),
+    0 24px 60px rgba(23, 38, 44, 0.12);
+}
+@media (max-width: 600px) {
+  .page {
+    margin: 12px;
+    padding: 24px 16px 32px;
+  }
+}
+.ear {
+  white-space: nowrap;
+}
+@media (max-width: 1000px) {
+  .masthead-row {
+    grid-template-columns: 1fr;
+  }
+  .ear {
+    display: none;
+  }
+}
+@media (min-width: 1001px) {
+  .masthead h1 {
+    font-size: clamp(56px, 6.2vw, 74px);
+    white-space: nowrap;
+  }
+}
+
+/* --- Paper texture on the white sheet too: same creases and grain, lighter, behind the content */
+.page {
+  position: relative;
+  isolation: isolate;
+}
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='1400'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.0016 0.0026' numOctaves='3' seed='11'/%3E%3CfeDiffuseLighting lighting-color='%23ffffff' surfaceScale='14'%3E%3CfeDistantLight azimuth='225' elevation='48'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.09 0 0 0 0 0.15 0 0 0 0 0.17 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 1400px 1400px, 220px 220px;
+  mix-blend-mode: multiply;
+  opacity: 0.32;
 }
