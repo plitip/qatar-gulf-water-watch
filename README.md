@@ -94,13 +94,6 @@ ocean-colour products (multi-sensor, 4 km). The background on the 2008 bloom is 
 Richlen et al., "The catastrophic 2008–2009 red tide in the Arabian gulf region",
 *Harmful Algae* (2010).
 
-## How this was built
-
-I used an AI coding assistant (Claude) to help build this. I decided what the project
-does and made the design calls in [DECISIONS.md](docs/DECISIONS.md), and I run, test and
-review everything before it goes in. If something has only been tested on made-up data or
-isn't verified yet, the code and docs say so.
-
 ## License
 
 [MIT](LICENSE)
