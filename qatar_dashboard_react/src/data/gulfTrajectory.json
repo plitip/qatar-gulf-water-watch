@@ -1,12 +1,7 @@
 {
-  "window_end_date": "2026-10-13",
+  "window_end_date": "2026-10-14",
   "window_days": 10,
   "daily": [
-    {
-      "date": "2026-10-04",
-      "nearest_km": 10.6,
-      "hotspot_count": 27
-    },
     {
       "date": "2026-10-05",
       "nearest_km": 10.6,
@@ -51,19 +46,24 @@
       "date": "2026-10-13",
       "nearest_km": 12.4,
       "hotspot_count": 46
+    },
+    {
+      "date": "2026-10-14",
+      "nearest_km": 12.4,
+      "hotspot_count": 47
     }
   ],
   "trend": {
     "verdict": "no_clear_trend",
-    "slope_km_per_day": 3.34,
+    "slope_km_per_day": 0.96,
     "usable_days": 10,
-    "message": "The nearest unusual patch stayed at about the same distance from Doha (+3.3 km a day)."
+    "message": "The nearest unusual patch stayed at about the same distance from Doha (+1.0 km a day)."
   },
   "recurring_area": {
-    "pixels": 27,
+    "pixels": 26,
     "min_days": 5,
-    "lat": 25.505,
-    "lon": 51.586,
+    "lat": 25.5,
+    "lon": 51.587,
     "km_from_doha": 24,
     "direction_from_doha": "north",
     "km_from_shore": 10
