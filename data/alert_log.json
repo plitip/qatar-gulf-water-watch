@@ -1,5 +1,11 @@
 [
   {
+    "flagged_on": "2026-10-19",
+    "source": "gulf trajectory",
+    "message": "The nearest unusual patch moved about 9 km a day closer to Doha over 10 days.",
+    "review": "not reviewed"
+  },
+  {
     "flagged_on": "2026-10-18",
     "source": "gulf trajectory",
     "message": "The nearest unusual patch moved about 7 km a day closer to Doha over 10 days.",
