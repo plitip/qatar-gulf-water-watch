@@ -1,5 +1,5 @@
 {
-  "last_run_utc": "2026-10-26T11:45:59Z",
+  "last_run_utc": "2026-10-27T11:12:45Z",
   "steps": {
     "intake check": true,
     "Gulf scan": true,
@@ -7,17 +7,17 @@
     "dashboard update": true
   },
   "intake": {
-    "scene_date": "2026-10-24",
+    "scene_date": "2026-10-25",
     "readings": {
-      "Ras Laffan": 2.27,
-      "Ras Abu Fontas": 3.97,
-      "Umm Al Houl": 2.73
+      "Ras Laffan": 2.51,
+      "Ras Abu Fontas": 2.71,
+      "Umm Al Houl": 2.63
     }
   },
   "gulf": {
-    "scene_date": "2026-10-24",
-    "hotspot_count": 5,
-    "nearest_km": 174.4
+    "scene_date": "2026-10-25",
+    "hotspot_count": 6,
+    "nearest_km": 260.2
   },
   "flags_total": 3,
   "flags_by_review": {
