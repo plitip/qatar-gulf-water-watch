@@ -1,12 +1,7 @@
 {
-  "window_end_date": "2026-11-03",
+  "window_end_date": "2026-11-04",
   "window_days": 10,
   "daily": [
-    {
-      "date": "2026-10-25",
-      "nearest_km": 260.2,
-      "hotspot_count": 6
-    },
     {
       "date": "2026-10-26",
       "nearest_km": 260.2,
@@ -51,13 +46,18 @@
       "date": "2026-11-03",
       "nearest_km": 14.7,
       "hotspot_count": 66
+    },
+    {
+      "date": "2026-11-04",
+      "nearest_km": 14.7,
+      "hotspot_count": 62
     }
   ],
   "trend": {
     "verdict": "approaching",
-    "slope_km_per_day": -30.02,
+    "slope_km_per_day": -28.34,
     "usable_days": 10,
-    "message": "The nearest unusual patch moved about 30 km a day closer to Doha over 10 days."
+    "message": "The nearest unusual patch moved about 28 km a day closer to Doha over 10 days."
   },
   "recurring_area": {
     "pixels": 2,
