@@ -1,5 +1,5 @@
 {
-  "last_run_utc": "2026-11-09T14:35:46Z",
+  "last_run_utc": "2026-11-10T13:54:17Z",
   "steps": {
     "intake check": true,
     "Gulf scan": true,
@@ -7,25 +7,31 @@
     "dashboard update": true
   },
   "intake": {
-    "scene_date": "2026-11-07",
+    "scene_date": "2026-11-08",
     "readings": {
-      "Ras Laffan": 1.48,
-      "Ras Abu Fontas": 4.51,
-      "Umm Al Houl": 2.42
+      "Ras Laffan": 1.84,
+      "Ras Abu Fontas": 3.23,
+      "Umm Al Houl": 2.15
     }
   },
   "gulf": {
-    "scene_date": "2026-11-07",
-    "hotspot_count": 27,
+    "scene_date": "2026-11-08",
+    "hotspot_count": 11,
     "nearest_km": 15.0
   },
-  "flags_total": 8,
+  "flags_total": 9,
   "flags_by_review": {
-    "not reviewed": 8,
+    "not reviewed": 9,
     "likely real": 0,
     "false alarm": 0
   },
   "recent_flags": [
+    {
+      "flagged_on": "2026-11-08",
+      "source": "gulf trajectory",
+      "message": "The nearest unusual patch moved about 12 km a day closer to Doha over 10 days.",
+      "review": "not reviewed"
+    },
     {
       "flagged_on": "2026-11-07",
       "source": "gulf trajectory",
