@@ -44,7 +44,7 @@ jobs:
 
       # Downloaded scenes and each month's "normal" are kept between runs, so a day only
       # downloads what's new.
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: data/cache
           key: scenes-${{ github.run_id }}
