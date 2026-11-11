@@ -15,9 +15,10 @@ from datetime import date
 import numpy as np
 
 from bloomwatch import intake
-from bloomwatch.backtest import BASE64_ALPHABET, checks_near_origin, encode_map_classes, map_classes, run_backtest
+from bloomwatch import gulf
+from bloomwatch.backtest import checks_near_origin, run_backtest
 from bloomwatch.config import QATAR_REFERENCE_POINT
-from bloomwatch.gulf import compute_trend, find_anomalies, haversine_km, keep_patches, recurring_area
+from bloomwatch.gulf import BASE64_ALPHABET, compute_trend, encode_map_classes, map_classes, find_anomalies, haversine_km, keep_patches, recurring_area
 from bloomwatch.projection import project_hotspot_path, summarize_path
 from bloomwatch.publish import flags_from_run, publish_trajectory_to_dashboard, record_flags
 
@@ -250,3 +251,42 @@ def test_flag_log_records_each_flag_once(tmp_path):
 def test_quiet_run_raises_no_flags():
     quiet = {"window_end_date": "2026-09-24", "trend": {"verdict": "no_clear_trend", "message": "flat"}}
     assert flags_from_run({"scene_date": "2026-09-24", "readings": {}, "alerts": []}, quiet) == []
+
+
+# --- empty scenes and the recent-days maps -----------------------------------------------
+
+def test_a_scene_with_no_values_is_empty():
+    assert gulf.scene_is_empty(np.full((3, 4), np.nan))
+    partly = np.full((3, 4), np.nan)
+    partly[1, 2] = 0.8
+    assert not gulf.scene_is_empty(partly)
+
+
+def test_backtest_counts_an_empty_scene_as_missing():
+    result = run_backtest(date(2008, 9, 1), date(2008, 9, 1), 1, download=lambda day: "scene.nc", scan=lambda path: None)
+    assert result["daily"][0]["hotspot_count"] is None
+
+
+class CoordinatesOutOfDatasetBounds(Exception):
+    """Same class name copernicusmarine raises for a date that isn't published yet."""
+
+
+def test_recent_maps_leave_out_unpublished_and_empty_days(monkeypatch):
+    def fake_download(day):
+        if day == date(2026, 9, 25):
+            raise CoordinatesOutOfDatasetBounds("not yet")
+        return day
+
+    grid = {"rows": 1, "cols": 3, "north": 26.0, "south": 26.0, "west": 51.0, "east": 51.1}
+    monkeypatch.setattr(gulf, "download_gulf_scene", fake_download)
+    monkeypatch.setattr(
+        gulf, "map_frame",
+        lambda day, _: None if day == date(2026, 9, 23) else (grid, np.array([[1, 3, 0]]), 19),
+    )
+    monkeypatch.setattr(gulf, "scan_for_hotspots", lambda day: [{"distance_km": 41.6}] if day.day == 24 else [])
+
+    maps = gulf.recent_map_frames(days=3, end_date=date(2026, 9, 25))
+
+    assert [f["date"] for f in maps["frames"]] == ["2026-09-24"]
+    assert maps["frames"][0]["km_to_doha"] == 42
+    assert maps["grid"] == grid

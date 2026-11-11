@@ -20,10 +20,7 @@ each month).
 
 import json
 import logging
-import math
 from datetime import date, timedelta
-
-import numpy as np
 
 from .config import (
     BACKTEST_FILE,
@@ -35,9 +32,10 @@ from .config import (
 )
 from .gulf import (
     download_archive_month,
-    find_anomalies,
+    encode_map_classes,
     haversine_km,
     hotspots_in_grid,
+    map_frame,
     load_monthly_normal,
     scan_for_hotspots,
 )
@@ -98,11 +96,11 @@ def run_backtest(
     while day <= end:
         log.info("Backtest: checking %s ...", day)
         scene_path = download(day)
-        if scene_path is None:
+        hotspots = None if scene_path is None else scan(scene_path)  # None: no scene, or an empty one
+        if hotspots is None:
             daily.append({"date": day.isoformat(), "nearest_km_to_qatar": None,
                           "nearest_km_to_origin": None, "hotspot_count": None})
         else:
-            hotspots = scan(scene_path)
             nearest_qatar = min((h["distance_km"] for h in hotspots), default=None)
             nearest_origin = min(
                 (haversine_km(h["lat"], h["lon"], DIBBA_ORIGIN_POINT["lat"], DIBBA_ORIGIN_POINT["lon"])
@@ -194,58 +192,20 @@ def compare_early_august(years=(2008, *COMPARISON_YEARS)) -> list[dict]:
     return rows
 
 
-# Map classes for the site's 2008 map, 2 bits each.
-MAP_LAND, MAP_NORMAL, MAP_ABOVE, MAP_FLAGGED = 0, 1, 2, 3
-MAP_ABOVE_Z = 2.0  # "above normal" on the map; flagged still needs 3 SD, the floor and a patch
-BASE64_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
-
-
-def encode_map_classes(classes) -> str:
-    """Pack a grid of map classes (0-3) into text, three cells per character, row by row."""
-    flat = [int(c) for c in np.asarray(classes).ravel()]
-    flat += [0] * (-len(flat) % 3)
-    return "".join(BASE64_ALPHABET[flat[i] * 16 + flat[i + 1] * 4 + flat[i + 2]] for i in range(0, len(flat), 3))
-
-
-def map_classes(values, normal) -> np.ndarray:
-    """Land / normal / above normal / flagged for every pixel of one day's grid."""
-    z, flagged = find_anomalies(values, *normal)
-    classes = np.full(values.shape, MAP_NORMAL, dtype=np.uint8)
-    classes[np.isnan(values)] = MAP_LAND
-    classes[(z >= MAP_ABOVE_Z) & ~flagged] = MAP_ABOVE
-    classes[flagged] = MAP_FLAGGED
-    return classes
-
-
 def backtest_map_frames(result: dict) -> dict:
     """Every checked day of the backtest as a small map, for the site to play through.
 
     Rows run north to south (the file's latitude is south to north, so it's flipped).
     """
-    import xarray as xr
-
     frames, grid = [], None
     for record in result["daily"]:
         if record["hotspot_count"] is None:
             continue
         day = date.fromisoformat(record["date"])
-        with xr.open_dataset(download_2008_scene(day)) as scene:
-            chl = scene[CHL_VARIABLE]
-            values = chl.values[0] if "time" in chl.dims else chl.values
-            lats, lons = chl["latitude"].values, chl["longitude"].values
-        classes = map_classes(values, load_monthly_normal(day.month))[::-1]
-        if grid is None:
-            grid = {
-                "rows": int(values.shape[0]),
-                "cols": int(values.shape[1]),
-                "north": float(lats.max()),
-                "south": float(lats.min()),
-                "west": float(lons.min()),
-                "east": float(lons.max()),
-            }
+        grid, classes, flagged_km2 = map_frame(download_2008_scene(day), day)
         frames.append({
             "date": record["date"],
-            "flagged_km2": int(round(float((classes == MAP_FLAGGED).sum()) * km2_per_pixel(float(np.mean(lats))))),
+            "flagged_km2": flagged_km2,
             "km_to_origin": record["nearest_km_to_origin"],
             "km_to_qatar": record["nearest_km_to_qatar"],
             "cells": encode_map_classes(classes),
@@ -257,12 +217,6 @@ def backtest_map_frames(result: dict) -> dict:
         "documented_first_sighting": DOCUMENTED_FIRST_SIGHTING.isoformat(),
         "frames": frames,
     }
-
-
-def km2_per_pixel(latitude: float) -> float:
-    """Area of one 1/24-degree grid square at this latitude (~19 km² across the Gulf)."""
-    side_km = 111.32 / 24
-    return side_km * side_km * math.cos(math.radians(latitude))
 
 
 def run_and_save_backtest() -> dict:

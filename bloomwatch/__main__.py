@@ -27,6 +27,7 @@ def run_daily() -> int:
         ("Gulf scan", gulf.scan_today),
         ("trajectory", gulf.track_trajectory),
         ("dashboard update", publish.publish_trajectory_to_dashboard),
+        ("recent maps", lambda: publish.publish_recent_maps(gulf.recent_map_frames())),
     ]
     results, succeeded = {}, {}
     for name, step in steps:

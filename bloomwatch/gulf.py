@@ -57,6 +57,7 @@ MIN_LOG_STD = 0.05         # floor on a pixel's spread, so a very steady pixel c
 # Days in the trajectory window. Some will have no published or usable scene; those
 # stay missing instead of being filled in.
 TRAJECTORY_WINDOW_DAYS = 10
+RECENT_MAP_DAYS = 7  # how many days of maps the site shows
 
 # Two points always make a line. Below this many usable days, don't call a trend.
 MIN_POINTS_FOR_TREND = 4
@@ -159,8 +160,9 @@ def keep_patches(mask: np.ndarray, min_pixels: int) -> np.ndarray:
     return keep
 
 
-def scan_for_hotspots(scene_path, normal=None) -> list[dict]:
-    """Every hotspot pixel in a one-day scene file, nearest to Qatar first.
+def scan_for_hotspots(scene_path, normal=None) -> list[dict] | None:
+    """Every hotspot pixel in a one-day scene file, nearest to Qatar first, or None if the
+    scene is empty (see scene_is_empty).
 
     `normal` is (mean, std) for the scene's month; by default it's loaded (or built)
     for whatever month the scene is from.
@@ -172,6 +174,8 @@ def scan_for_hotspots(scene_path, normal=None) -> list[dict]:
         month = int(np.atleast_1d(chl["time"].dt.month.values)[0])
         if "time" in chl.dims:
             chl = chl.mean(dim="time")  # a one-day file still has a time axis of length 1
+        if scene_is_empty(chl.values):
+            return None
         return hotspots_in_grid(chl.values, chl["latitude"].values, chl["longitude"].values, month, normal)
 
 
@@ -196,11 +200,111 @@ def hotspots_in_grid(values, lats, lons, month: int, normal=None) -> list[dict]:
     return hotspots
 
 
+# --- Maps for the site ------------------------------------------------------------------
+# Each pixel becomes one of four classes, 2 bits each.
+MAP_LAND, MAP_NORMAL, MAP_ABOVE, MAP_FLAGGED = 0, 1, 2, 3
+MAP_ABOVE_Z = 2.0  # "above normal" on the map; flagged still needs 3 SD, the floor and a patch
+BASE64_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+
+
+def encode_map_classes(classes) -> str:
+    """Pack a grid of map classes (0-3) into text, three cells per character, row by row."""
+    flat = [int(c) for c in np.asarray(classes).ravel()]
+    flat += [0] * (-len(flat) % 3)
+    return "".join(BASE64_ALPHABET[flat[i] * 16 + flat[i + 1] * 4 + flat[i + 2]] for i in range(0, len(flat), 3))
+
+
+def map_classes(values, normal) -> np.ndarray:
+    """Land / normal / above normal / flagged for every pixel of one day's grid."""
+    z, flagged = find_anomalies(values, *normal)
+    classes = np.full(values.shape, MAP_NORMAL, dtype=np.uint8)
+    classes[np.isnan(values)] = MAP_LAND
+    classes[(z >= MAP_ABOVE_Z) & ~flagged] = MAP_ABOVE
+    classes[flagged] = MAP_FLAGGED
+    return classes
+
+
+def km2_per_pixel(latitude: float) -> float:
+    """Area of one 1/24-degree grid square at this latitude (~19 km² across the Gulf)."""
+    side_km = 111.32 / 24
+    return side_km * side_km * math.cos(math.radians(latitude))
+
+
+
+def scene_is_empty(values) -> bool:
+    """True when a scene has no chlorophyll value anywhere. Copernicus sometimes publishes a
+    day as a file of nothing but gaps; that day is missing, not "checked and clean"."""
+    return bool(np.isnan(values).all())
+
+
+def map_frame(scene_path, day: date):
+    """One day's scene as map classes (rows north to south), its grid, and the flagged area
+    in km², or None if the scene is empty."""
+    import xarray as xr
+
+    with xr.open_dataset(scene_path) as scene:
+        chl = scene[CHL_VARIABLE]
+        values = chl.values[0] if "time" in chl.dims else chl.values
+        lats, lons = chl["latitude"].values, chl["longitude"].values
+    if scene_is_empty(values):
+        return None
+    classes = map_classes(values, load_monthly_normal(day.month))[::-1]  # file latitude runs south to north
+    grid = {
+        "rows": int(values.shape[0]),
+        "cols": int(values.shape[1]),
+        "north": float(lats.max()),
+        "south": float(lats.min()),
+        "west": float(lons.min()),
+        "east": float(lons.max()),
+    }
+    flagged_km2 = int(round(float((classes == MAP_FLAGGED).sum()) * km2_per_pixel(float(np.mean(lats)))))
+    return grid, classes, flagged_km2
+
+
+def recent_map_frames(days: int = RECENT_MAP_DAYS, end_date: date | None = None) -> dict:
+    """The last `days` days that have a published scene, as maps for the site, oldest first.
+
+    Ends on the trajectory's last day (the newest published scene), so the maps and the
+    "Latest satellite check" text describe the same days. The scenes are already cached by
+    the trajectory step, so this normally downloads nothing.
+    """
+    if end_date is None:
+        end_date = (
+            date.fromisoformat(json.loads(GULF_TRAJECTORY_FILE.read_text())["window_end_date"])
+            if GULF_TRAJECTORY_FILE.exists()
+            else date.today()
+        )
+    frames, grid = [], None
+    for offset in range(days - 1, -1, -1):
+        day = end_date - timedelta(days=offset)
+        try:
+            scene_path = download_gulf_scene(day)
+        except Exception as exc:
+            if is_not_published(exc):
+                continue  # a missing day stays missing
+            raise
+        frame = map_frame(scene_path, day)
+        if frame is None:
+            log.info("  %s's scene is empty, leaving it off the maps", day)
+            continue
+        grid, classes, flagged_km2 = frame
+        hotspots = scan_for_hotspots(scene_path)
+        frames.append({
+            "date": day.isoformat(),
+            "flagged_km2": flagged_km2,
+            "km_to_doha": round(hotspots[0]["distance_km"]) if hotspots else None,
+            "cells": encode_map_classes(classes),
+        })
+    return {"grid": grid, "doha": QATAR_REFERENCE_POINT, "frames": frames}
+
+
 def scan_today(today: date | None = None) -> dict:
     """Snapshot of the newest published scene. Writes gulf_bloom_watch.json."""
     scene_path, scene_date = download_latest_day(download_gulf_scene, today or date.today())
     log.info("Scanning the wider Gulf for elevated chlorophyll patches (%s) ...", scene_date)
     hotspots = scan_for_hotspots(scene_path)
+    if hotspots is None:
+        raise ValueError(f"The newest scene ({scene_date}) has no data anywhere; nothing to scan.")
     nearest = hotspots[0] if hotspots else None
 
     result = {
@@ -246,6 +350,10 @@ def build_daily_series(end_date: date, window_days: int, pixel_counts=None) -> l
             continue
 
         hotspots = scan_for_hotspots(scene_path)
+        if hotspots is None:
+            log.info("  %s's scene is empty, treating it as missing", day)
+            records.append({"date": day.isoformat(), "nearest_km": None, "hotspot_count": None})
+            continue
         if pixel_counts is not None:
             pixel_counts.update((round(h["lat"], 4), round(h["lon"], 4)) for h in hotspots)
         records.append({

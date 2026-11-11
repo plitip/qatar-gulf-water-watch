@@ -1,5 +1,6 @@
 import Reveal from "../animations/Reveal.jsx";
 import { formatDay } from "../utils.js";
+import RecentDaysMap from "./RecentDaysMap.jsx";
 
 const KM2_PER_SQUARE = 19; // a 1/24-degree square is about 4.6 km by 4.2 km at these latitudes
 
@@ -61,6 +62,8 @@ export default function LatestCheck({ status, trajectory }) {
           steadily toward Qatar. Checked on {formatDay(status.last_run_utc)}.
         </p>
       </div>
+
+      <RecentDaysMap />
 
       {status.recent_flags.length > 0 && (
         <table className="flag-table">

@@ -26,7 +26,7 @@ Copernicus Marine (free account)
                                     └─► backtest.run_backtest ──► backtest_2008_red_tide.json
                                          (Aug 2008 – May 2009, real historical event)
 
-python -m bloomwatch daily = check → scan → trajectory → dashboard, then publish.py records
+python -m bloomwatch daily = check → scan → trajectory → dashboard → recent maps, then publish.py records
 flags and writes status.json for the site. Output files go in data/.
 ```
 
@@ -44,7 +44,7 @@ Everything runs as `python -m bloomwatch <command>` from the repo root, or as
 | `publish.py` | Everything the dashboards show: the trajectory (both dashboards), the flag log (`data/alert_log.json`), `status.json` for the "Latest satellite check" section, and the backtest summary. | `dashboard` | Run against real data |
 | `projection.py` | Moves the 5 nearest hotspots along the sampled ocean current, held constant for 10 days, and flags any that come within 20 km of the coast. Physics, not a trained model. | `project` | Math tested offline; not yet run on real currents |
 | `backtest.py` | Runs the same detector over Aug 2008 – May 2009 (every 3 days) and compares its first flag with the documented first sighting (~25 Aug 2008); runs the same early-August checks for 14 comparison years; and exports every checked day as a small map for the site. | `backtest` | Run on real data, with the comparison years |
-| `__main__.py` | The command line. `daily` runs check → scan → trajectory → dashboard, then records flags and writes the status; one failing step doesn't stop the rest, and it exits non-zero only if every step failed. | `daily` | Run against real data |
+| `__main__.py` | The command line. `daily` runs check → scan → trajectory → dashboard → recent maps, then records flags and writes the status; one failing step doesn't stop the rest, and it exits non-zero only if every step failed. | `daily` | Run against real data |
 
 `tests/test_logic.py` has 22 offline tests: the hotspot rule, trend verdicts, where unusual
 water recurs, advection arrival, backtest stepping and summary, the comparison count, the
@@ -97,14 +97,18 @@ is no script that regenerates the embedded `DATA` block yet (see [ROADMAP.md](RO
 headline built from the data (at the moment, that August 2026 was higher than any August
 since 2018 at all three intakes), the three intakes with one small chart each (2026 as a
 line over the usual 2018–2025 range as a shaded band, hover and keyboard readable), the
-monthly numbers as a table, the latest satellite check with the flag log, the 2008 red
+monthly numbers as a table, the latest satellite check with a map of each of the last
+few days and the flag log, the 2008 red
 tide with the backtest result, and a short "About the data". Components:
-`StatusLine`, `IntakeOverview`, `SeasonalChart`, `MonthlyTable`, `LatestCheck`, `RedTide2008`, `RedTideMap`.
+`StatusLine`, `IntakeOverview`, `SeasonalChart`, `MonthlyTable`, `LatestCheck`, `RecentDaysMap`, `RedTide2008`, `RedTideMap` (the two maps share `src/maps/`).
 Data in `src/data/`: `chlHistory.js` (monthly history), and
 `status.json`, `gulfTrajectory.json`, `backtest2008.json`, all written by `publish.py`. The
 2008 map frames (~540 KB, ~60 KB gzipped) are `public/data/redtide2008.json`, fetched only
 when that section comes near the screen: one character per three satellite squares, each
-square one of land / normal / well above normal / flagged.
+square one of land / normal / well above normal / flagged. The daily run rewrites
+`public/data/recent_days.json` the same way with the last 7 days that have an image (a day
+whose scene is published but has no values anywhere is left out, and the trajectory counts
+it as missing rather than clean).
 A section with no data doesn't render at all.
 
 Design rules it follows: a light-only newspaper look (masthead and dateline, ruled sections,

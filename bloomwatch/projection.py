@@ -100,7 +100,10 @@ def summarize_path(path: list[dict]) -> dict:
 def project_hotspots(today: date | None = None) -> dict:
     """Project the nearest hotspots in the newest scene. Writes gulf_bloom_prediction.json."""
     scene_path, scene_date = download_latest_day(download_gulf_scene, today or date.today())
-    hotspots = scan_for_hotspots(scene_path)[:TOP_N_HOTSPOTS]
+    hotspots = scan_for_hotspots(scene_path)
+    if hotspots is None:
+        raise ValueError(f"The newest scene ({scene_date}) has no data anywhere; nothing to project.")
+    hotspots = hotspots[:TOP_N_HOTSPOTS]
     result = {"date": scene_date.isoformat(), "projections": []}
 
     if not hotspots:

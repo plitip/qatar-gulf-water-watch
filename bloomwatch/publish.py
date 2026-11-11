@@ -135,6 +135,14 @@ def publish_backtest_maps(frames: dict, path=REACT_PUBLIC_DATA_DIR / "redtide200
     log.info("Wrote %d map frames to %s", len(frames["frames"]), path)
 
 
+def publish_recent_maps(frames: dict, path=REACT_PUBLIC_DATA_DIR / "recent_days.json") -> None:
+    """The last few days as maps, for the "Latest satellite check" section. A static file the
+    site fetches, like the 2008 maps; rewritten on every daily run."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(frames, separators=(",", ":")), encoding="utf-8")
+    log.info("Wrote %d recent-day maps to %s", len(frames["frames"]), path)
+
+
 def _write_json(path, data) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")

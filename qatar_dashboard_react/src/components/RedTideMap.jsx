@@ -1,35 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { gsap, ScrollTrigger, useGSAP, prefersReducedMotion } from "../animations/gsapSetup.js";
 import { MONTH_NAMES, formatDay } from "../utils.js";
+import { decode, drawClasses, mapAspect, placeOnMap, roughly } from "../maps/mapUtils.js";
+import MapLegend from "../maps/MapLegend.jsx";
 
 // Every check of the 2008 backtest as a map of the Gulf, one pixel per 4 km satellite square.
 // The frames are a static file (public/data/redtide2008.json) fetched when the section gets
 // close, so they don't weigh down the rest of the page.
 
-const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-const CHAR_VALUE = Object.fromEntries([...ALPHABET].map((c, i) => [c, i]));
-const CLASS_COLORS = ["--map-land", "--map-sea", "--map-above", "--map-flagged"];
 const SECONDS_PER_FRAME = 0.14;
 
 const CHART_H = 150;
 const CM = { top: 22, right: 8, bottom: 26, left: 58 };
-
-function decode(cells, count) {
-  const classes = new Uint8Array(count);
-  for (let i = 0; i < cells.length; i++) {
-    const n = CHAR_VALUE[cells[i]];
-    const at = i * 3;
-    if (at < count) classes[at] = n >> 4;
-    if (at + 1 < count) classes[at + 1] = (n >> 2) & 3;
-    if (at + 2 < count) classes[at + 2] = n & 3;
-  }
-  return classes;
-}
-
-function cssColor(name) {
-  const hex = getComputedStyle(document.documentElement).getPropertyValue(name).trim().replace("#", "");
-  return [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
-}
 
 function daysBetween(a, b) {
   return Math.round((new Date(b) - new Date(a)) / 86_400_000);
@@ -43,11 +25,6 @@ function relativeToSighting(date, sighting) {
   return `About ${Math.round(d / 30.4)} months after it was first reported`;
 }
 
-function roughly(km2) {
-  if (km2 < 1000) return `${Math.round(km2 / 10) * 10}`;
-  return `${Math.round(km2 / 1000).toLocaleString("en")},000`;
-}
-
 function describeFrame(frame) {
   if (frame.flagged_km2 === 0) return "Nothing flagged.";
   return (
@@ -58,16 +35,6 @@ function describeFrame(frame) {
 
 function captionFor(frame, data) {
   return `${relativeToSighting(frame.date, data.documented_first_sighting)}. ${describeFrame(frame)}`;
-}
-
-// Grid values are pixel centres; the image spans half a pixel beyond them on every side.
-function placeOnMap(point, grid) {
-  const latStep = (grid.north - grid.south) / (grid.rows - 1);
-  const lonStep = (grid.east - grid.west) / (grid.cols - 1);
-  return {
-    left: `${((point.lon - (grid.west - lonStep / 2)) / (grid.cols * lonStep)) * 100}%`,
-    top: `${((grid.north + latStep / 2 - point.lat) / (grid.rows * latStep)) * 100}%`,
-  };
 }
 
 export default function RedTideMap({ theme }) {
@@ -131,19 +98,7 @@ export default function RedTideMap({ theme }) {
   // Draw the current frame. Redrawn when the theme changes, since the colours come from CSS.
   useEffect(() => {
     if (!decoded || shown === null) return;
-    const { rows, cols } = data.grid;
-    const ctx = canvasRef.current.getContext("2d");
-    const image = ctx.createImageData(cols, rows);
-    const colors = CLASS_COLORS.map(cssColor);
-    const classes = decoded[shown];
-    for (let i = 0; i < classes.length; i++) {
-      const [r, g, b] = colors[classes[i]];
-      image.data[i * 4] = r;
-      image.data[i * 4 + 1] = g;
-      image.data[i * 4 + 2] = b;
-      image.data[i * 4 + 3] = 255;
-    }
-    ctx.putImageData(image, 0, 0);
+    drawClasses(canvasRef.current, decoded[shown], data.grid.cols, data.grid.rows);
   }, [decoded, data, shown, theme, systemDark]);
 
   function stop() {
@@ -202,8 +157,7 @@ export default function RedTideMap({ theme }) {
   if (failed) return null;
 
   const grid = data?.grid;
-  const midLat = grid ? (grid.north + grid.south) / 2 : 25.7;
-  const aspect = grid ? (grid.cols * Math.cos((midLat * Math.PI) / 180)) / grid.rows : 2.07;
+  const aspect = mapAspect(grid);
   const current = shown !== null ? data.frames[shown] : null;
   const longestNote = data
     ? data.frames.map((f) => captionFor(f, data)).reduce((a, b) => (b.length > a.length ? b : a), "")
@@ -281,20 +235,7 @@ export default function RedTideMap({ theme }) {
         )}
       </div>
 
-      <ul className="map-legend">
-        <li>
-          <span className="swatch" style={{ background: "var(--map-sea)" }} /> Normal for the month
-        </li>
-        <li>
-          <span className="swatch" style={{ background: "var(--map-above)" }} /> Well above normal
-        </li>
-        <li>
-          <span className="swatch" style={{ background: "var(--map-flagged)" }} /> Flagged by the check
-        </li>
-        <li>
-          <span className="swatch" style={{ background: "var(--map-land)" }} /> Land
-        </li>
-      </ul>
+      <MapLegend />
 
       {data && (
         <div className="map-controls">
