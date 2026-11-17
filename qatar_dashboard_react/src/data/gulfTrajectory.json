@@ -1,22 +1,7 @@
 {
-  "window_end_date": "2026-11-14",
+  "window_end_date": "2026-11-17",
   "window_days": 10,
   "daily": [
-    {
-      "date": "2026-11-05",
-      "nearest_km": 15.0,
-      "hotspot_count": 80
-    },
-    {
-      "date": "2026-11-06",
-      "nearest_km": 14.7,
-      "hotspot_count": 40
-    },
-    {
-      "date": "2026-11-07",
-      "nearest_km": 15.0,
-      "hotspot_count": 27
-    },
     {
       "date": "2026-11-08",
       "nearest_km": 15.0,
@@ -51,17 +36,32 @@
       "date": "2026-11-14",
       "nearest_km": null,
       "hotspot_count": 0
+    },
+    {
+      "date": "2026-11-15",
+      "nearest_km": 409.3,
+      "hotspot_count": 4
+    },
+    {
+      "date": "2026-11-16",
+      "nearest_km": null,
+      "hotspot_count": null
+    },
+    {
+      "date": "2026-11-17",
+      "nearest_km": null,
+      "hotspot_count": null
     }
   ],
   "trend": {
     "verdict": "receding",
-    "slope_km_per_day": 11.07,
-    "usable_days": 9,
-    "message": "The nearest unusual patch moved about 11 km a day away from Doha over 9 days."
+    "slope_km_per_day": 50.95,
+    "usable_days": 7,
+    "message": "The nearest unusual patch moved about 51 km a day away from Doha over 7 days."
   },
   "recurring_area": {
     "pixels": 11,
-    "min_days": 5,
+    "min_days": 4,
     "lat": 25.271,
     "lon": 51.688,
     "km_from_doha": 19,
