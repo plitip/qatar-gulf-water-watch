@@ -1,12 +1,7 @@
 {
-  "window_end_date": "2026-11-23",
+  "window_end_date": "2026-11-24",
   "window_days": 10,
   "daily": [
-    {
-      "date": "2026-11-14",
-      "nearest_km": null,
-      "hotspot_count": 0
-    },
     {
       "date": "2026-11-15",
       "nearest_km": 409.3,
@@ -51,6 +46,11 @@
       "date": "2026-11-23",
       "nearest_km": 565.6,
       "hotspot_count": 4
+    },
+    {
+      "date": "2026-11-24",
+      "nearest_km": null,
+      "hotspot_count": 0
     }
   ],
   "trend": {
